@@ -12,3 +12,6 @@ Rebuild: `./build.sh` (needs Node + Playwright, Python + NumPy, ffmpeg)
 Shared drawing code lives in `lib.js`; each episode (`ep2.html` … `ep5.html`) defines its scenes plus a sound timeline (`sfx`, `music`).
 Build one: `./build_ep.sh 3` → `mochi_eps3.mp4` (`render_ep.js` renders frames, `sfx.py` synthesizes the audio from the timeline).
 Upload titles/descriptions: `channel/UPLOAD-EPS-2-5.md`.
+
+## Long-form compilation (16:9)
+`./build_compilation.sh` → `mochi_kompilasi_vol1.mp4`: intro, per-episode title card, the vertical episode on a branded side panel, a "Kamu tim mana?" poll, and a 20 s end-screen outro. Segments live in `compile.html`; add new episodes to its `EPISODES` list and to the loop in `build_compilation.sh`.
