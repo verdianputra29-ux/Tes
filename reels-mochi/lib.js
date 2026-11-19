@@ -621,6 +621,20 @@ function endCard(t, t0, l1, l2) {
 function epPill(t, n, title) { pill(`Eps. ${n} • ${title}`, W / 2, 250, C.ink, C.yellow, t, .05); }
 function zoomAt(z, cx = W / 2, cy = H / 2) { ctx.translate(cx, cy); ctx.scale(z, z); ctx.translate(-cx, -cy); }
 
+
+function wallClock(x, y, r, minutes) { // analog clock; minutes since 12:00
+  ctx.save(); ctx.translate(x, y);
+  ell(0, 0, r, r); fillStroke(C.white, 10);
+  ctx.strokeStyle = C.ink; ctx.lineCap = 'round';
+  for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(Math.sin(a) * r * .78, -Math.cos(a) * r * .78); ctx.lineTo(Math.sin(a) * r * .9, -Math.cos(a) * r * .9); ctx.stroke(); }
+  const ha = minutes / 720 * Math.PI * 2, ma = minutes / 60 * Math.PI * 2;
+  ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(ha) * r * .5, -Math.cos(ha) * r * .5); ctx.stroke();
+  ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(ma) * r * .75, -Math.cos(ma) * r * .75); ctx.stroke();
+  ell(0, 0, 10, 10); ctx.fillStyle = C.red; ctx.fill();
+  ctx.restore();
+}
+function withCatColors(cat, catD, fn) { const a = C.cat, b = C.catD; C.cat = cat; C.catD = catD; try { fn(); } finally { C.cat = a; C.catD = b; } }
+
 // ======================= episode driver =======================
 // EP = { dur, scenes: [[t0, t1, fn(t, lt)]...], fx(t), sfx: [[name, t, opts]...], music: [[t0, t1, gain]...], key }
 function runEpisode(EP) {

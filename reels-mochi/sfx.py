@@ -300,6 +300,52 @@ def s_drip(t, g=0.3):
     add(fx, sweep(800 + 1400 * x / 0.12, 0.12) * env(len(x), 0.001, 0.03), t, g)
 
 
+
+def s_doorbell(t, g=0.35):
+    for k, fr in enumerate([1318.5, 1046.5]):
+        x = ts(0.9)
+        add(fx, (np.sin(2 * np.pi * fr * x) + 0.3 * np.sin(2 * np.pi * fr * 3 * x)) * env(len(x), 0.002, 0.35), t + k * 0.45, g)
+
+
+def s_honk(t, g=0.3, d=0.35):
+    x = ts(d)
+    w = np.sign(np.sin(2 * np.pi * 415 * x)) + np.sign(np.sin(2 * np.pi * 523 * x))
+    add(fx, onepole(w * 0.5, 0.2) * env(len(x), 0.005) * np.minimum(1, (d - x) / 0.03), t, g)
+
+
+def s_shutter(t, g=0.45):
+    for k in (0, 0.06):
+        n = noise(0.04)
+        add(fx, (n - onepole(n, 0.4)) * env(len(n), 0.0005, 0.01) * 1.5, t + k, g)
+
+
+def s_type(t, t1=2.0, g=0.18):
+    k = t
+    while k < t1:
+        n = noise(0.015)
+        add(fx, (n - onepole(n, 0.5)) * env(len(n), 0.0005, 0.004), k, g * rng.uniform(0.6, 1.0))
+        k += rng.uniform(0.05, 0.11)
+
+
+def s_stretch(t, g=0.4, d=0.7):
+    x = ts(d)
+    add(fx, sweep(120 + 500 * (x / d) ** 2 + 30 * np.sin(2 * np.pi * 25 * x), d) * env(len(x), 0.01) * np.minimum(1, (d - x) / 0.05), t, g)
+
+
+def s_zzz(t, g=0.15):
+    d = 1.2
+    x = ts(d)
+    add(fx, onepole(noise(d), 0.05) * np.sin(np.pi * x / d) ** 2 * 3, t, g)
+
+
+def s_alarm(t, t1=2.0, g=0.22):
+    k = t
+    while k < t1:
+        for j in range(4):
+            x = ts(0.045)
+            add(fx, np.sign(np.sin(2 * np.pi * 2100 * x)) * env(len(x), 0.002), k + j * 0.075, g)
+        k += 0.5
+
 for ev in tl["sfx"]:
     name, t, opts = ev[0], ev[1], (ev[2] if len(ev) > 2 else {})
     globals()["s_" + name](t, **opts)
