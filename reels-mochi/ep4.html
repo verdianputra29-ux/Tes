@@ -1,0 +1,64 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 4</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 4 — "Diet": starts strong with salad -> stomach growls at 10 AM -> glowing martabak -> "diet starts next Monday".
+runEpisode({
+  dur: 16,
+  hook: 'DIET KAMU BERTAHAN\nBERAPA JAM?',
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      room(t);
+      desk(1360);
+      drawCat({ x: 540, y: 1170, s: 1.05, eyes: 'determined', mouth: 'smile', tail: t * 3, sq: Math.sin(t * 6) * .02 });
+      // headband
+      ctx.save(); ctx.translate(540, 1170); ctx.scale(1.05, 1.05); rr(-176, -110, 352, 36, 18); fillStroke(C.red, 8); ctx.restore();
+      saladBowl(540, 1330, .9);
+      caption('DIET MULAI\nHARI INI!', t, .2, 430, { size: 150, hi: [1] });
+      epPill(t, 4, 'DIET');
+      pill('TARGET: -5 KG', W / 2, 660, C.teal, C.white, t, 1.3);
+    }],
+    [3.5, 7, (t, lt) => {
+      room(t);
+      alarmClock(220, 560, .8, '10:00', false, t);
+      desk(1360);
+      const g = Math.sin(t * 40) * prog(lt, .3, .5) * (1 - prog(lt, 2.4, 2.8));
+      drawCat({ x: 540 + g * 6, y: 1170, s: 1.05, eyes: 'flat', mouth: 'o', tail: t, sweat: 1 });
+      if (lt > .3 && lt < 2.8) growl(540, 1260, t);
+      saladBowl(540, 1330, .9);
+      ctx.save(); ctx.translate(540, 1330); rr(-140, -36, 280, 30, 0); ctx.fillStyle = C.white; ctx.fill(); ctx.restore(); // eaten salad (empty bowl)
+      caption('*KRUUUUK*', t, 3.8, 760, { size: 130, fill: C.yellow, shake: 7, rot: .05 });
+      caption('BARU JAM 10 PAGI...', t, 4.6, 420, { size: 110 });
+    }],
+    [7, 11, (t, lt) => {
+      const g = ctx.createRadialGradient(W / 2, 1000, 50, W / 2, 1000, 1200); g.addColorStop(0, '#FFD9A0'); g.addColorStop(1, '#B5552A');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const glow = eOut(prog(lt, .2, 1));
+      martabak(540, 1030, 1.15, t, glow);
+      drawCat({ x: 540, y: lerp(1700, 1560, eBack(prog(lt, .4, .9))), s: 1.0, eyes: 'heart', mouth: 'o', tail: t * 4, shake: t, rot: Math.sin(t * 3) * .05 });
+      // drool
+      if (lt > 1) { ctx.save(); ctx.translate(540, 1560); ctx.beginPath(); ctx.moveTo(0, 70); ctx.quadraticCurveTo(14, 70 + 40 * prog(lt, 1, 1.6), 0, 80 + 50 * prog(lt, 1, 1.6)); ctx.lineWidth = 10; ctx.strokeStyle = '#9FD8F0'; ctx.stroke(); ctx.restore(); }
+      caption('...MARTABAK\nMANIS?!', t, 7.5, 420, { size: 150, hi: [1], hiColor: '#FFE9C9' });
+    }],
+    [11, 16, (t, lt) => {
+      zoomAt(lerp(1.15, 1, eOut(prog(lt, 0, .7))));
+      room(t);
+      desk(1360);
+      const chew = Math.floor(lt * 5) % 2;
+      drawCat({ x: 540, y: 1170, s: 1.05, eyes: 'happy', mouth: chew ? 'o' : 'smile', tail: t * 3, sq: chew * .04 });
+      martabak(560, 1365, .62, t, 0, false);
+      const r = rng(4); for (let i = 0; i < 8; i++) { const k = ((lt * 1.5) + r()) % 1; ell(400 + r() * 280, 1250 + k * 120, 8, 6); ctx.fillStyle = '#F2B544'; ctx.globalAlpha = 1 - k; ctx.fill(); ctx.globalAlpha = 1; }
+      caption('DIETNYA MULAI\nSENIN DEPAN AJA', t, 11.4, 430, { size: 130, hi: [1] });
+      endCard(t, 13.6, 'TAG TEMEN', 'SEPERJUANGAN!');
+    }],
+  ],
+  fx(t) { flash(t, 3.5, .3); swipe(t, 7.0, .45); flash(t, 11.0, .35); },
+  music: [[0, 3.45, 1], [11.2, 16, .9]],
+  sfx: [['pop', .2, { f: 700 }], ['boing', .5, { g: .35 }], ['pop', 1.35, { f: 1000, g: .35 }],
+    ['whoosh', 3.3, { d: .3, g: .4 }], ['growl', 3.8], ['growl', 5.2, { g: .35 }], ['pop', 4.65, { f: 600 }], ['tick', 3.6, { n: 12 }],
+    ['whoosh', 6.75, { d: .5, g: .6 }], ['choir', 7.2], ['sparkle', 7.6], ['sparkle', 8.6], ['pop', 7.55, { f: 800 }],
+    ['whoosh', 10.85, { d: .35, g: .5 }], ['nom', 11.2], ['nom', 11.6], ['nom', 12.0], ['nom', 12.4], ['nom', 12.8], ['nom', 13.2], ['pop', 11.45, { f: 700 }], ['ding', 12.2, { f: 1568, g: .25 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>

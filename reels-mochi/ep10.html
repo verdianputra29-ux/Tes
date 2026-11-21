@@ -1,0 +1,89 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 10</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 10 — "Kaca vs Kamera Depan": mirror = 10/10 -> front camera = who is this -> 17 filters -> posts a photo of the sky.
+function sparkles(t, cx, cy, rad, n = 7) {
+  for (let i = 0; i < n; i++) {
+    const a = i / n * Math.PI * 2 + t * .8, k = (Math.sin(t * 4 + i * 2) + 1) / 2;
+    ctx.save(); ctx.translate(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad * 1.2); ctx.scale(.6 + k * .7, .6 + k * .7); ctx.fillStyle = C.yellow;
+    ctx.beginPath(); for (let j = 0; j < 8; j++) { const r = j % 2 ? 8 : 28, an = j * Math.PI / 4; ctx.lineTo(Math.cos(an) * r, Math.sin(an) * r); } ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+}
+function cameraUI(fn) { // full-screen front-camera frame
+  rr(70, 260, 940, 1400, 50); fillStroke('#2A1A12', 12);
+  ctx.save(); rr(100, 290, 880, 1240, 30); ctx.clip(); fn(); ctx.restore();
+  ell(540, 1600, 50, 50); fillStroke(C.white, 10);
+}
+const FILTERS = ['hearts', 'glasses', 'blush', 'crown', 'hearts', 'glasses'];
+runEpisode({
+  dur: 16,
+  hook: 'KAMERA DEPAN\nITU JAHAT!',
+  scenes: [
+    [0, 4, (t, lt) => {
+      room(t, { window: false });
+      // mirror
+      ell(540, 1000, 330, 450); fillStroke('#E8D3B5', 22);
+      ctx.save(); ell(540, 1000, 310, 430); ctx.clip();
+      ctx.fillStyle = '#DDF0F5'; ctx.fillRect(200, 550, 680, 900);
+      ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.beginPath(); ctx.moveTo(300, 600); ctx.lineTo(420, 600); ctx.lineTo(260, 1100); ctx.lineTo(220, 1000); ctx.closePath(); ctx.fill();
+      drawCat({ x: 540, y: 1080, s: 1.15, eyes: 'sparkle', mouth: 'smile', tail: t * 2, shake: t });
+      sparkles(t, 540, 1000, 300);
+      ctx.restore();
+      caption('DI KACA:', t, .2, 370, { size: 130 });
+      caption('GANTENG BANGET', t, .7, 500, { size: 130, fill: C.yellow });
+      pill('RATING: 10/10', W / 2, 1600, C.teal, C.white, t, 1.6);
+      epPill(t, 10, 'KACA VS KAMERA DEPAN');
+    }],
+    [4, 8, (t, lt) => {
+      room(t, { window: false });
+      cameraUI(() => {
+        ctx.fillStyle = '#D9C2A6'; ctx.fillRect(100, 290, 880, 1240);
+        ctx.save(); ctx.translate(540, 1080); ctx.scale(1.55, 1.05); ctx.translate(-540, -1080); // unflattering wide-angle
+        drawCat({ x: 540, y: 1150, s: 1.5, eyes: 'flat', mouth: 'flat', tail: 0, blush: false, sq: -.08 });
+        ctx.restore();
+      });
+      caption('DI KAMERA DEPAN:', t, 4.3, 160, { size: 110 });
+      caption('...SIAPA INI??', t, 5.3, 1760, { size: 130, fill: '#FF8A7A', shake: 3 });
+    }],
+    [8, 12, (t, lt) => {
+      room(t, { window: false });
+      const f = FILTERS[Math.floor(lt * 1.6) % FILTERS.length];
+      cameraUI(() => {
+        ctx.fillStyle = '#F5D7C2'; ctx.fillRect(100, 290, 880, 1240);
+        drawCat({ x: 540, y: 1000, s: 1.4, eyes: f === 'glasses' ? 'flat' : 'open', mouth: 'smile', tail: t, blush: f === 'blush' });
+        ctx.save(); ctx.translate(540, 1000); ctx.scale(1.4, 1.4);
+        if (f === 'glasses') { rr(-120, -62, 100, 60, 18); fillStroke('#2A1A12', 6); rr(20, -62, 100, 60, 18); fillStroke('#2A1A12', 6); ctx.fillRect(-20, -40, 40, 8); }
+        if (f === 'crown') { ctx.beginPath(); ctx.moveTo(-90, -150); ctx.lineTo(-90, -230); ctx.lineTo(-45, -180); ctx.lineTo(0, -240); ctx.lineTo(45, -180); ctx.lineTo(90, -230); ctx.lineTo(90, -150); ctx.closePath(); fillStroke(C.yellow, 7); }
+        if (f === 'blush') { ctx.fillStyle = 'rgba(244,110,110,.8)'; ell(-105, 30, 40, 24); ctx.fill(); ell(105, 30, 40, 24); ctx.fill(); }
+        ctx.restore();
+        if (f === 'hearts') for (let i = 0; i < 6; i++) heart(200 + i * 140, 420 + Math.sin(t * 3 + i) * 30, .7, i % 2 ? C.red : '#FF8FB1');
+      });
+      pill(`FILTER KE-${Math.min(17, 1 + Math.floor(lt * 4.2))}`, W / 2, 200, C.ink, C.yellow, t, 8.05);
+      caption('COBA FILTER\n17 KALI', t, 8.4, 1760, { size: 110, hi: [1] });
+    }],
+    [12, 16, (t, lt) => {
+      room(t, { window: false });
+      drawCat({ x: 760, y: 1350, s: .9, eyes: 'happy', mouth: 'smile', tail: t * 2 });
+      phone(370, 1050, 1.5, -.05, () => {
+        const g = ctx.createLinearGradient(0, -182, 0, 180); g.addColorStop(0, '#9FD8F0'); g.addColorStop(1, '#FFD9A0');
+        ctx.fillStyle = g; ctx.fillRect(-94, -182, 188, 362);
+        ell(30, -60, 34, 34); ctx.fillStyle = '#FFF3C4'; ctx.fill();
+        ctx.beginPath(); ctx.arc(-40, 60, 40, 0, 7); ctx.arc(0, 40, 50, 0, 7); ctx.arc(45, 62, 38, 0, 7); ctx.fillStyle = '#FFF'; ctx.fill();
+        ctx.fillStyle = C.ink; ctx.font = `900 18px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('"langit hari ini"', 0, 150);
+      });
+      pill('DIUPLOAD!', 370, 640, C.teal, C.white, t, 12.4);
+      caption('AKHIRNYA UPLOAD\nFOTO LANGIT AJA', t, 12.8, 330, { size: 120, hi: [1] });
+      endCard(t, 14.0, 'TAG TEMEN YANG', 'FOTONYA LANGIT MULU!');
+    }],
+  ],
+  fx(t) { flash(t, 4.0, .25); swipe(t, 8.0, .4); flash(t, 12.0, .3); },
+  music: [[0, 4.0, 1], [8.0, 12, .9], [12.6, 16, .85]],
+  sfx: [['sparkle', .3], ['pop', .2, { f: 700 }], ['pop', .75, { f: 900 }], ['ding', 1.0, { f: 1568, g: .25 }], ['sparkle', 2.0], ['pop', 1.65, { f: 1000, g: .35 }],
+    ['shutter', 4.0], ['sting', 4.15, { g: .3 }], ['pop', 4.35, { f: 700 }], ['pop', 5.35, { f: 600 }],
+    ['whoosh', 7.8, { d: .4, g: .5 }], ['shutter', 8.0], ['shutter', 8.6], ['shutter', 9.25], ['shutter', 9.85], ['shutter', 10.5], ['shutter', 11.1], ['shutter', 11.7], ['pop', 8.45, { f: 800 }],
+    ['notif', 12.4], ['tada', 12.5, { g: .2 }], ['pop', 12.85, { f: 700 }], ['pop', 14.05, { f: 800, g: .4 }]],
+});
+</script></body></html>

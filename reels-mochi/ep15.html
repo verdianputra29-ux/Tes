@@ -1,0 +1,66 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 15</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 15 — "Nonton Horor": brave alone -> door creaks -> hides under blanket -> all lights on till morning.
+const DARK = { view: 'night', wallA: '#5B4A6E', wallB: '#3A2E4A', wx: 640 };
+function tv(x, y, t, scary) {
+  rr(x - 230, y - 160, 460, 300, 20); fillStroke('#2A1A12', 11);
+  ctx.save(); rr(x - 205, y - 138, 410, 256, 10); ctx.clip();
+  ctx.fillStyle = scary ? '#1A2430' : '#24323F'; ctx.fillRect(x - 205, y - 138, 410, 256);
+  ctx.globalAlpha = .7 + Math.sin(t * 30) * .1; ell(x + 60, y, 50, 90); ctx.fillStyle = '#DDE7EE'; ctx.fill();
+  ell(x + 45, y - 30, 9, 13); ell(x + 75, y - 30, 9, 13); ctx.fillStyle = '#111'; ctx.fill(); ctx.globalAlpha = 1;
+  ctx.restore();
+  rr(x - 30, y + 140, 60, 50, 6); fillStroke('#2A1A12', 8);
+  const g = ctx.createRadialGradient(x, y, 50, x, y, 700); g.addColorStop(0, 'rgba(160,200,230,.22)'); g.addColorStop(1, 'rgba(160,200,230,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function hideBlanket(x, y, t, peek) {
+  ctx.save(); ctx.translate(x + Math.sin(t * 40) * 4, y);
+  ctx.beginPath(); ctx.moveTo(-230, 120); ctx.quadraticCurveTo(-240, -200, 0, -220); ctx.quadraticCurveTo(240, -200, 230, 120); ctx.closePath(); fillStroke(C.blanket, 11);
+  ctx.save(); ctx.clip(); ctx.fillStyle = C.blanketD; for (let i = -3; i < 4; i++) ctx.fillRect(i * 80, -240, 36, 400); ctx.restore();
+  if (peek) { rr(-120, -110, 240, 70, 30); ctx.fillStyle = '#1A0F0A'; ctx.fill(); [-50, 50].forEach(d => { ell(d, -76, 24, 24); fillStroke('#fff', 5); ell(d + Math.sin(t * 3) * 6, -74, 9, 9); ctx.fillStyle = C.ink; ctx.fill(); }); }
+  ctx.restore();
+}
+function lamp(x, on) { ctx.strokeStyle = C.ink; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 120); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - 60, 170); ctx.lineTo(x - 30, 120); ctx.lineTo(x + 30, 120); ctx.lineTo(x + 60, 170); ctx.closePath(); fillStroke(C.yellow, 7); if (on) { const g = ctx.createRadialGradient(x, 200, 10, x, 200, 400); g.addColorStop(0, 'rgba(255,240,180,.45)'); g.addColorStop(1, 'rgba(255,240,180,0)'); ctx.fillStyle = g; ctx.fillRect(x - 400, 150, 800, 600); } }
+runEpisode({
+  dur: 16,
+  hook: 'BERANI NONTON\nHOROR SENDIRIAN?',
+  scenes: [
+    [0, 4, (t, lt) => {
+      room(t, DARK); tv(540, 720, t, false); sofa(560, 1450);
+      drawCat({ x: 560, y: 1240, s: .95, eyes: 'determined', mouth: 'smile', tail: t * 2 });
+      chipsBag(780, 1290, .45, .2);
+      caption('NONTON HOROR\nSENDIRIAN? BERANI!', t, .2, 400, { size: 110, hi: [1] });
+      epPill(t, 15, 'NONTON HOROR');
+    }],
+    [4, 8, (t, lt) => {
+      room(t, DARK); door(170, 1480, 0, eOut(prog(lt, .3, 2.5)) * .5); tv(620, 720, t, true); sofa(640, 1450);
+      drawCat({ x: 640, y: 1240, s: .95, eyes: lt < .4 ? 'determined' : 'wide', mouth: lt < .4 ? 'smile' : 'o', tail: t * 9, sweat: prog(lt, .5, 1), shake: lt > .4 ? t : 0 });
+      caption('*KRIEEEEET...*', t, 4.4, 330, { size: 130, fill: '#C9D8E6', shake: 6, rot: .05 });
+    }],
+    [8, 12, (t, lt) => {
+      room(t, DARK); door(170, 1480, 0, .5); tv(620, 720, t, true); sofa(640, 1450);
+      hideBlanket(640, 1300, t, true);
+      caption('MODE NGUMPET', t, 8.3, 330, { size: 140, fill: C.yellow });
+      pill('*ternyata cuma angin*', W / 2, 520, C.ink, '#C9D8E6', t, 9.6);
+    }],
+    [12, 16, (t, lt) => {
+      room(t, { view: 'sun' });
+      [200, 540, 880].forEach(x => lamp(x, true));
+      sofa(560, 1450);
+      hideBlanket(560, 1300, t * .2, true);
+      pill('LAMPU NYALA: 100%', W / 2, 600, C.yellow, C.ink, t, 12.6);
+      caption('SEMUA LAMPU NYALA\nSAMPE PAGI', t, 12.3, 420, { size: 115, hi: [1] });
+      endCard(t, 13.6, 'SIAPA YANG', 'PERNAH BEGINI?');
+    }],
+  ],
+  fx(t) { lightning(t, 4.4); swipe(t, 8.0, .45); flash(t, 12.0, .45); },
+  music: [[0, 4.3, .8], [12.3, 16, .85]],
+  sfx: [['pop', .2, { f: 700 }], ['crunch', .6], ['crunch', 1.2], ['crunch', 1.8], ['crunch', 2.4],
+    ['creak', 4.3], ['thunder', 4.4, { g: .5 }], ['heart', 5.6], ['heart', 6.0], ['heart', 6.4], ['heart', 6.8], ['heart', 7.2], ['pop', 4.45, { f: 500 }],
+    ['whoosh', 7.75, { d: .5, g: .6 }], ['heart', 8.4], ['heart', 8.8], ['heart', 9.2], ['pop', 8.35, { f: 800 }], ['pop', 9.65, { f: 1000, g: .3 }],
+    ['click', 12.0], ['click', 12.15], ['click', 12.3], ['birds', 12.6], ['pop', 12.35, { f: 700 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>

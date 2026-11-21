@@ -1,0 +1,74 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 6</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 6 — "Deadline": scrolling instead of working -> hours fly by -> 3 AM panic -> submit at 23:59 -> deadline extended.
+function docScreen(lines, submit) {
+  ctx.fillStyle = '#E9E2D8'; ctx.fillRect(-210, -131, 420, 30);
+  ctx.fillStyle = C.ink; ctx.font = `900 18px ${FONT}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('TUGAS_FINAL_FIX.docx', -196, -116);
+  ctx.fillStyle = '#B9A99A';
+  for (let i = 0; i < lines; i++) ctx.fillRect(-190, -88 + i * 22, 300 + ((i * 53) % 80), 10);
+  if (submit) { rr(40, 70, 150, 50, 14); fillStroke(C.teal, 5); ctx.fillStyle = C.white; ctx.font = `900 24px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('KIRIM', 115, 96); }
+}
+function mugs(n) { for (let i = 0; i < n; i++) { const x = 900 - (i % 3) * 70, y = 1290 - Math.floor(i / 3) * 70; rr(x - 28, y - 56, 56, 56, 10); fillStroke(C.white, 6); ctx.beginPath(); ctx.arc(x + 30, y - 28, 14, -1.2, 1.2); ctx.lineWidth = 6; ctx.stroke(); } }
+runEpisode({
+  dur: 16,
+  hook: 'TIM SKS\nWAJIB NONTON!',
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      room(t);
+      calendar(190, 860, .9, 'H-1', 'DEADLINE');
+      desk(1340);
+      laptop(330, 1340, .8, true, () => docScreen(0));
+      drawCat({ x: 690, y: 1140, s: 1.0, eyes: 'happy', mouth: 'smile', tail: t * 2, sq: Math.sin(t * 3) * .02 });
+      phone(860, 1230, .45, .2, () => { const o = (t * 260) % 120; ctx.fillStyle = '#F2A93B'; for (let i = -2; i < 4; i++) { rr(-80, -170 + i * 120 + o, 160, 100, 12); ctx.fill(); } });
+      caption('DEADLINE: BESOK', t, .2, 430, { size: 140 });
+      caption('"santai lah, masih lama"', t, 1.3, 620, { size: 76, fill: '#FFE9C9', rot: .04 });
+      epPill(t, 6, 'DEADLINE');
+    }],
+    [3.5, 7, (t, lt) => {
+      const night = lt > 1.6;
+      room(t, { view: night ? 'night' : 'sun', wallA: night ? '#D9B48E' : C.wallA, wallB: night ? '#B77F55' : C.wallB });
+      wallClock(250, 620, 120, 600 + lt * 260);
+      desk(1340);
+      laptop(330, 1340, .8, true, () => docScreen(0));
+      drawCat({ x: 690, y: 1140, s: 1.0, eyes: 'happy', mouth: 'smile', tail: t * 2 });
+      phone(860, 1230, .45, .2, () => { const o = (t * 260) % 120; ctx.fillStyle = '#F2A93B'; for (let i = -2; i < 4; i++) { rr(-80, -170 + i * 120 + o, 160, 100, 12); ctx.fill(); } });
+      pill('*5 JAM KEMUDIAN*', W / 2, 330, C.ink, C.yellow, t, 3.7);
+      caption('MASIH SCROLL...', t, 4.3, 470, { size: 120 });
+    }],
+    [7, 11.5, (t, lt) => {
+      const sh = 4;
+      ctx.translate(Math.sin(t * 70) * sh, Math.cos(t * 60) * sh);
+      room(t, { view: 'night', wallA: '#C99E78', wallB: '#9A6A48' });
+      alarmClock(220, 640, .75, '03:00', false, t);
+      desk(1340);
+      mugs(Math.min(6, 1 + Math.floor(lt * 1.6)));
+      laptop(330, 1340, .8, true, () => docScreen(Math.floor(lt * 2.2)));
+      drawCat({ x: 600, y: 1140, s: 1.0, eyes: 'wide', mouth: 'flat', tail: t * 9, sweat: 1, shake: t, sq: (Math.floor(t * 14) % 2) * .025 });
+      caption('JAM 3 PAGI:\nMODE PANIK', t, 7.3, 420, { size: 140, hi: [1], hiColor: '#FF8A7A', shake: 4 });
+    }],
+    [11.5, 16, (t, lt) => {
+      const done = lt > .7;
+      room(t, { view: 'night', wallA: '#C99E78', wallB: '#9A6A48' });
+      alarmClock(220, 640, .75, '23:59', lt < .7, t);
+      desk(1340);
+      mugs(6);
+      laptop(330, 1340, .8, true, () => docScreen(9, true));
+      drawCat({ x: 640, y: 1140, s: 1.0, eyes: lt < 1.6 ? (done ? 'happy' : 'determined') : 'flat', mouth: lt < 1.6 ? 'smile' : 'flat', tail: t * 2, sweat: done ? 1 - prog(lt, .7, 1.4) : 1, sq: lt > .6 && lt < .8 ? .1 : 0 });
+      if (lt > .6 && lt < 1.6) pill('TERKIRIM!', W / 2, 760, C.teal, C.white, t, 12.1);
+      notif(W / 2, 760, 'DOSEN', 'Deadline diundur 1 minggu ya', t, 13.1, C.red, 920, '!');
+      caption('...DIUNDUR\nSEMINGGU??', t, 13.6, 430, { size: 150, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 14.5, 'TIM SKS:', 'SISTEM KEBUT SEMALAM');
+    }],
+  ],
+  fx(t) { flash(t, 3.5, .3); swipe(t, 7.0, .45); flash(t, 11.5, .3); },
+  music: [[0, 7.0, 1], [11.5, 13.05, .8]],
+  sfx: [['pop', .2, { f: 700 }], ['pop', 1.35, { f: 900, g: .35 }], ['type', 3.6, { t1: 6.8, g: .05 }],
+    ['whoosh', 3.3, { d: .3, g: .4 }], ['tick', 3.6, { n: 13 }], ['pop', 3.75, { f: 1000, g: .4 }], ['pop', 4.35, { f: 700 }],
+    ['whoosh', 6.75, { d: .5, g: .6 }], ['sting', 7.05, { g: .35 }], ['type', 7.2, { t1: 11.4, g: .3 }], ['heart', 8.0], ['heart', 8.6], ['heart', 9.2], ['heart', 9.8], ['heart', 10.4], ['pop', 7.35, { f: 800 }],
+    ['alarm', 11.5, { t1: 12.2 }], ['click', 12.1], ['tada', 12.15, { g: .25 }], ['notif', 13.1], ['sad', 13.4], ['pop', 13.65, { f: 600 }], ['pop', 14.55, { f: 800, g: .4 }]],
+});
+</script></body></html>

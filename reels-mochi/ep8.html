@@ -1,0 +1,67 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 8</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 8 — "Baterai 1%": battery dies mid-show -> frantic charger hunt -> cable is 30 cm -> acrobatic pose, still happy.
+function battScreen(pct, blink) {
+  ctx.fillStyle = pct <= 1 ? '#2A1A12' : '#FFF6E8'; ctx.fillRect(-94, -182, 188, 362);
+  rr(-50, -60, 100, 150, 14); ctx.lineWidth = 8; ctx.strokeStyle = pct <= 1 ? C.red : C.teal; ctx.stroke();
+  rr(-18, -76, 36, 18, 4); ctx.fillStyle = ctx.strokeStyle; ctx.fill();
+  const h = Math.max(6, 136 * pct / 100); if (!blink) { rr(-42, 82 - h, 84, h, 6); ctx.fill(); }
+  ctx.fillStyle = pct <= 1 ? C.red : C.teal; ctx.font = `900 40px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(`${pct}%`, 0, 130);
+}
+function socket(x, y) { rr(x - 50, y - 70, 100, 140, 16); fillStroke(C.white, 8); ell(x - 18, y, 8, 14); ctx.fillStyle = C.ink; ctx.fill(); ell(x + 18, y, 8, 14); ctx.fill(); }
+runEpisode({
+  dur: 16,
+  hook: 'BATERAI 1% PAS\nLAGI SERU-SERUNYA',
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      room(t);
+      drawCat({ x: 540, y: 1300, s: 1.0, eyes: lt < 1.2 ? 'happy' : 'wide', mouth: lt < 1.2 ? 'smile' : 'o', tail: t * 2, shake: lt > 1.2 ? t : 0 });
+      phone(540, 860, 1.4, -.04, () => battScreen(1, Math.floor(t * 4) % 2));
+      caption('BATERAI 1%...', t, .2, 340, { size: 140, fill: '#FF8A7A' });
+      pill('LAGI SERU-SERUNYA NONTON', W / 2, 1600, C.ink, C.yellow, t, 1.2);
+      epPill(t, 8, 'BATERAI 1%');
+    }],
+    [3.5, 7.5, (t, lt) => {
+      room(t);
+      const x = 540 + Math.sin(lt * 7) * 300;
+      speedLines(t, 12, 4, 'rgba(255,255,255,.6)');
+      drawCat({ x, y: 1300, s: .95, eyes: 'wide', mouth: 'scream', run: t * 26, tail: t * 10, sweat: 1, rot: Math.cos(lt * 7) * .2, shake: t });
+      ctx.save(); ctx.font = `900 70px ${FONT}`; ctx.textAlign = 'center';
+      ['?', '!', '?'].forEach((q, i) => { ctx.lineWidth = 12; ctx.strokeStyle = C.ink; ctx.strokeText(q, x - 120 + i * 120, 1000 - Math.abs(Math.sin(t * 6 + i)) * 40); ctx.fillStyle = C.yellow; ctx.fillText(q, x - 120 + i * 120, 1000 - Math.abs(Math.sin(t * 6 + i)) * 40); });
+      ctx.restore();
+      caption('CHARGER MANA\nCHARGER?!', t, 3.8, 430, { size: 140, hi: [1], shake: 4 });
+    }],
+    [7.5, 16, (t, lt) => {
+      room(t);
+      socket(130, 1380);
+      // cable (taut), from socket to phone
+      const px = lerp(560, 330, eOut(prog(lt, 0, .8))), py = lerp(1200, 1300, eOut(prog(lt, 0, .8)));
+      ctx.strokeStyle = C.white; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(130, 1380); ctx.lineTo(px, py); ctx.stroke();
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 3; ctx.stroke();
+      // contorted Mochi lying on the floor, stretched toward the socket
+      const st = eOut(prog(lt, .4, 1.2));
+      ctx.save(); ctx.translate(560, 1380); ctx.rotate(lerp(0, -1.25, st)); ctx.scale(lerp(1, 1.18, st), lerp(1, .82, st)); ctx.translate(-560, -1380);
+      drawCat({ x: 560, y: 1300, s: .95, eyes: lt < 2.2 ? 'determined' : 'happy', mouth: lt < 2.2 ? 'flat' : 'smile', tail: t * 2, sweat: lt < 2.2 ? 1 : 0 });
+      ctx.restore();
+      const pct = lt < 1.2 ? 1 : Math.min(100, Math.floor(1 + (lt - 1.2) * 4));
+      phone(px, py - 40, .55, -1.1, () => battScreen(Math.max(2, pct), false));
+      ctx.fillStyle = C.yellow; ctx.font = `900 60px ${FONT}`; ctx.textAlign = 'center';
+      if (lt > 1.0 && lt < 1.8) { ctx.lineWidth = 12; ctx.strokeStyle = C.ink; ctx.strokeText('NGECAS!', px + 60, py - 170); ctx.fillText('NGECAS!', px + 60, py - 170); }
+      caption('KABELNYA CUMA\n30 CM', t, 7.8, 430, { size: 140, hi: [1], hiColor: '#FF8A7A' });
+      caption('GAPAPA... YANG\nPENTING NYALA', t, 11.6, 760, { size: 110, hi: [1], out: 99 });
+      endCard(t, 13.4, 'SIAPA YANG', 'PERNAH POSE BEGINI?');
+    }],
+  ],
+  fx(t) { swipe(t, 3.5, .45); flash(t, 7.5, .35); },
+  music: [[0, 1.2, 1], [3.5, 7.5, 1.1], [11.4, 16, .85]],
+  sfx: [['pop', .2, { f: 700 }], ['sad', 1.2, { g: .3 }], ['pop', 1.25, { f: 900, g: .35 }],
+    ['whoosh', 3.3, { d: .4, g: .5 }], ['steps', 3.6, { t1: 7.3, every: .12, g: .28 }], ['pop', 3.85, { f: 800 }], ['boing', 5.0, { g: .3 }], ['boing', 6.3, { g: .3 }],
+    ['whoosh', 7.3, { d: .35, g: .5 }], ['stretch', 7.9], ['pop', 7.85, { f: 700 }], ['click', 8.5], ['ding', 8.6, { f: 1568, g: .3 }], ['tada', 9.8, { g: .22 }],
+    ['pop', 11.65, { f: 700 }], ['pop', 13.45, { f: 800, g: .4 }]],
+});
+</script></body></html>
