@@ -709,7 +709,7 @@ function nextTag(t, dur) {
   const p = eBack(prog(t, t0, t0 + .35));
   ctx.save(); ctx.translate(W / 2, 1545); ctx.scale(p, p); ctx.rotate(-.02);
   ctx.font = `900 40px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  const txt = 'EPS. BERIKUTNYA: BESOK JAM 4 SORE!', w = ctx.measureText(txt).width + 60;
+  const txt = 'EPS. BERIKUTNYA: BESOK JAM 3 SORE!', w = ctx.measureText(txt).width + 60;
   rr(-w / 2, -40, w, 80, 40); fillStroke(C.yellow, 8);
   ctx.fillStyle = C.ink; ctx.fillText(txt, 0, 3); ctx.restore();
 }
