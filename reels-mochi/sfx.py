@@ -346,6 +346,37 @@ def s_alarm(t, t1=2.0, g=0.22):
             add(fx, np.sign(np.sin(2 * np.pi * 2100 * x)) * env(len(x), 0.002), k + j * 0.075, g)
         k += 0.5
 
+
+def s_creak(t, g=0.35, d=1.2):
+    x = ts(d)
+    f = 180 + 60 * np.sin(2 * np.pi * 0.8 * x) + 40 * np.sin(2 * np.pi * 7 * x)
+    saw = (np.cumsum(f) / SR) % 1 * 2 - 1
+    gate = (np.sin(2 * np.pi * 30 * x) > 0.3)
+    add(fx, onepole(saw * gate, 0.25) * np.sin(np.pi * x / d) * 1.5, t, g)
+
+
+def s_sizzle(t, t1=2.0, g=0.18):
+    d = t1 - t
+    n = noise(d)
+    x = ts(d)
+    crackle = (rng.random(len(n)) > 0.995) * rng.uniform(-1, 1, len(n)) * 3
+    add(fx, ((n - onepole(n, 0.5)) * (0.6 + 0.4 * np.sin(2 * np.pi * 3 * x)) + crackle) * np.minimum(1, x / 0.3), t, g)
+
+
+def s_buzz(t, g=0.3, n=2):
+    for k in range(int(n)):
+        x = ts(0.25)
+        add(fx, np.sign(np.sin(2 * np.pi * 150 * x)) * 0.4 * onepole(np.ones(len(x)), 0.002), t + k * 0.35, g)
+
+
+def s_ring(t, t1=2.0, g=0.25):
+    k = t
+    while k < t1:
+        for j in range(2):
+            x = ts(0.4)
+            add(fx, (np.sin(2 * np.pi * 880 * x) + np.sin(2 * np.pi * 1108 * x)) * 0.5 * env(len(x), 0.01) * (np.sin(2 * np.pi * 20 * x) > 0), k + j * 0.5, g)
+        k += 2.0
+
 for ev in tl["sfx"]:
     name, t, opts = ev[0], ev[1], (ev[2] if len(ev) > 2 else {})
     globals()["s_" + name](t, **opts)

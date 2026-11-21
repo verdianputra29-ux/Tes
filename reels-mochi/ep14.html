@@ -1,0 +1,55 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 14</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 14 — "Ngantuk Habis Makan Siang": jumbo lunch -> food coma in meeting -> "agree!" -> now presenting tomorrow.
+function callGrid(hl) {
+  const cols = ['#F2A93B', '#6CC07A', '#7C6CD9', '#3FA7A0'];
+  for (let i = 0; i < 4; i++) {
+    const x = -200 + (i % 2) * 204, y = -125 + Math.floor(i / 2) * 128;
+    rr(x, y, 196, 120, 10); ctx.fillStyle = cols[i]; ctx.fill();
+    ell(x + 98, y + 52, 26, 26); ctx.fillStyle = '#FFE6C9'; ctx.fill(); ell(x + 98, y + 118, 46, 34); ctx.fill();
+    if (hl && i === 0) { rr(x, y, 196, 120, 10); ctx.lineWidth = 8; ctx.strokeStyle = C.yellow; ctx.stroke(); }
+  }
+}
+function meeting(t, cat, hl) { room(t); wallClock(220, 600, 100, 90 + t * 4); desk(1340); laptop(330, 1340, .8, true, () => callGrid(hl)); drawCat({ x: 690, y: 1140, s: 1.0, ...cat }); }
+runEpisode({
+  dur: 16,
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      room(t); desk(1360);
+      const chew = Math.floor(lt * 5) % 2;
+      drawCat({ x: 540, y: 1170, s: 1.05, eyes: 'happy', mouth: chew ? 'o' : 'smile', tail: t * 3, sq: chew * .04 + prog(lt, 1.5, 3.2) * .08 });
+      plate(540, 1350, 1.1, 'rice');
+      caption('MAKAN SIANG\nPORSI JUMBO', t, .2, 430, { size: 140, hi: [1] });
+      epPill(t, 14, 'NGANTUK SIANG');
+    }],
+    [3.5, 8, (t, lt) => {
+      const nod = Math.max(0, Math.sin(lt * 2.2)) * .3;
+      meeting(t, { eyes: Math.sin(lt * 2.2) > .2 ? 'closed' : 'flat', mouth: 'flat', tail: t * .5, rot: nod, sq: -.03 });
+      if (Math.sin(lt * 2.2) > .2) zzz(t, 790, 960);
+      caption('JAM 1 SIANG:\nMODE NGANTUK', t, 3.8, 420, { size: 140, hi: [1], hiColor: '#C9B6FF' });
+    }],
+    [8, 12, (t, lt) => {
+      const sh = lt < .6 ? (1 - lt / .6) * 16 : 0;
+      ctx.translate(Math.sin(t * 80) * sh, Math.cos(t * 70) * sh);
+      meeting(t, { eyes: lt < .4 ? 'closed' : 'wide', mouth: lt < 1.4 ? 'o' : 'scream', tail: t * 8, sweat: prog(lt, .4, .8), shake: lt > .4 ? t : 0, rot: lt < .4 ? .3 : 0 }, true);
+      bubble(500, 700, 760, 160, 'Bos: "Mochi, setuju kan?"', 50, -170, 1);
+      caption('"SETUJU PAK!!"', t, 9.4, 420, { size: 150, fill: C.yellow, shake: 4 });
+    }],
+    [12, 16, (t, lt) => {
+      meeting(t, { eyes: 'flat', mouth: 'flat', tail: t, sweat: 1 }, true);
+      notif(W / 2, 700, 'BOS', 'Oke, kamu yang presentasi besok ya', t, 12.2, C.red, 940, '!', .92);
+      caption('...SETUJU APAAN\nTADI??', t, 12.9, 420, { size: 130, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 13.6, 'TAG TEMEN YANG', 'SUKA NGANTUK SIANG!');
+    }],
+  ],
+  fx(t) { flash(t, 3.5, .3); flash(t, 8.0, .25); swipe(t, 12.0, .4); },
+  music: [[0, 3.5, 1], [3.5, 8.0, .5], [12.8, 16, .8]],
+  sfx: [['nom', .4], ['nom', .8], ['nom', 1.2], ['nom', 1.6], ['pop', .2, { f: 700 }], ['zzz', 4.3], ['zzz', 5.8], ['zzz', 7.2], ['pop', 3.85, { f: 600 }],
+    ['notif', 8.05, { f: .8 }], ['boing', 8.4, { g: .45 }], ['heart', 8.7], ['heart', 9.0], ['pop', 9.45, { f: 900 }],
+    ['whoosh', 11.75, { d: .5, g: .55 }], ['notif', 12.2], ['sad', 12.6, { g: .3 }], ['pop', 12.95, { f: 600 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>

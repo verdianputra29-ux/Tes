@@ -635,6 +635,85 @@ function wallClock(x, y, r, minutes) { // analog clock; minutes since 12:00
 }
 function withCatColors(cat, catD, fn) { const a = C.cat, b = C.catD; C.cat = cat; C.catD = catD; try { fn(); } finally { C.cat = a; C.catD = b; } }
 
+
+function sofa(x, y) {
+  rr(x - 330, y - 200, 660, 200, 50); fillStroke('#C2563E', 11);
+  rr(x - 380, y - 120, 760, 170, 40); fillStroke('#D96A50', 11);
+  rr(x - 420, y - 160, 110, 220, 40); fillStroke('#C2563E', 11); rr(x + 310, y - 160, 110, 220, 40); fillStroke('#C2563E', 11);
+}
+function door(x, y, ring, open = 0) {
+  ctx.save(); if (ring) ctx.translate(Math.sin(ring * 80) * 5, 0);
+  if (open > 0) { rr(x - 150, y - 560, 300, 560, [20, 20, 0, 0]); fillStroke('#2A1A12', 11); }
+  ctx.save(); ctx.translate(x - 150, 0); ctx.scale(1 - open * .75, 1); ctx.translate(-(x - 150), 0);
+  rr(x - 150, y - 560, 300, 560, [20, 20, 0, 0]); fillStroke(C.wood, 11);
+  rr(x - 115, y - 520, 230, 220, 12); fillStroke(C.woodD, 7); rr(x - 115, y - 270, 230, 230, 12); fillStroke(C.woodD, 7);
+  ell(x + 105, y - 280, 14, 14); fillStroke(C.yellow, 6);
+  ctx.restore(); ctx.restore();
+}
+function shelves(y0 = 380) { // shop shelves with colorful products
+  const cols = ['#E2483D', '#3FA7A0', '#FFD23F', '#7C6CD9', '#6CC07A', '#F2A93B'];
+  for (let r = 0; r < 3; r++) {
+    const y = y0 + r * 260;
+    rr(40, y + 170, 1000, 30, 8); fillStroke(C.wood, 8);
+    for (let i = 0; i < 9; i++) { const h = 90 + ((i * 37 + r * 11) % 60); rr(70 + i * 108, y + 170 - h, 86, h, 10); fillStroke(cols[(i + r * 2) % 6], 6); }
+  }
+}
+function npcCat(x, y, s, col, colD, o = {}) { withCatColors(col, colD, () => drawCat({ x, y, s, eyes: 'open', mouth: 'flat', tail: 1, blush: false, ...o })); }
+const NPC = [['#B9A8A0', '#8E7C74'], ['#F3EDE4', '#D8CBB8'], ['#8A6450', '#6B4A3A'], ['#6E6A72', '#504C56'], ['#E9C08A', '#C99A5E']];
+function dumbbell(x, y, s, rot = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  rr(-90, -10, 180, 20, 8); fillStroke('#9C9C9C', 7);
+  [-1, 1].forEach(d => { rr(d * 90 - 22, -45, 44, 90, 12); fillStroke('#3B2B26', 8); });
+  ctx.restore();
+}
+function plate(x, y, s, fill) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ell(0, 0, 170, 48); fillStroke(C.white, 9);
+  if (fill === 'rice') { ctx.beginPath(); ctx.arc(0, -10, 110, Math.PI, 0); fillStroke('#FFF8EC', 8); ell(-40, -60, 30, 16); ctx.fillStyle = '#F2A93B'; ctx.fill(); ell(50, -50, 34, 14); ctx.fillStyle = '#6CC07A'; ctx.fill(); }
+  if (fill === 'burnt') { ctx.beginPath(); ctx.moveTo(-90, -10); ctx.lineTo(-60, -80); ctx.lineTo(-10, -60); ctx.lineTo(30, -100); ctx.lineTo(80, -50); ctx.lineTo(100, -10); ctx.closePath(); fillStroke('#2A1A12', 8); }
+  ctx.restore();
+}
+function smoke(t, x, y, amt, seed = 2) {
+  if (amt <= 0) return; const r = rng(seed);
+  for (let i = 0; i < 12 * amt; i++) {
+    const k = ((t * .5) + r()) % 1;
+    ctx.globalAlpha = (1 - k) * .75 * Math.min(1, amt);
+    ell(x + (r() - .5) * 200 + Math.sin(t * 2 + i) * 40, y - k * 700, 50 + k * 90, 40 + k * 70);
+    ctx.fillStyle = '#8C8C8C'; ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+function flames(t, x, y, s) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  [['#E2483D', 1], ['#F59A3C', .7], ['#FFD23F', .4]].forEach(([c, k]) => {
+    ctx.beginPath(); ctx.moveTo(-120 * k, 0);
+    for (let i = 0; i <= 6; i++) { const xx = -120 * k + i * 40 * k, hh = (120 + Math.sin(t * 20 + i * 2) * 40) * k; ctx.quadraticCurveTo(xx + 10 * k, -hh, xx + 20 * k, i % 2 ? -hh * .5 : 0); }
+    ctx.lineTo(120 * k, 0); ctx.closePath(); ctx.fillStyle = c; ctx.fill();
+  });
+  ctx.restore();
+}
+function chatScreen(msgs, header, t) { // inside phone() local coords (-94..94, -182..180)
+  ctx.fillStyle = '#EFE6D8'; ctx.fillRect(-94, -182, 188, 362);
+  ctx.fillStyle = C.teal; ctx.fillRect(-94, -182, 188, 44);
+  ctx.fillStyle = C.white; ctx.font = `900 18px ${FONT}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(header, -80, -160);
+  let y = -120;
+  msgs.forEach(([txt, mine, col]) => {
+    ctx.font = `700 14px ${FONT}`; const w = Math.min(150, ctx.measureText(txt).width + 20);
+    const x = mine ? 84 - w : -84;
+    rr(x, y, w, 30, 10); ctx.fillStyle = col || (mine ? '#D9F2C7' : C.white); ctx.fill();
+    ctx.fillStyle = C.ink; ctx.fillText(txt, x + 10, y + 15, w - 16); y += 38;
+  });
+}
+function nextTag(t, dur) {
+  const t0 = dur - 2.6; if (t < t0) return;
+  const p = eBack(prog(t, t0, t0 + .35));
+  ctx.save(); ctx.translate(W / 2, 1545); ctx.scale(p, p); ctx.rotate(-.02);
+  ctx.font = `900 40px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const txt = 'EPS. BERIKUTNYA: BESOK JAM 4 SORE!', w = ctx.measureText(txt).width + 60;
+  rr(-w / 2, -40, w, 80, 40); fillStroke(C.yellow, 8);
+  ctx.fillStyle = C.ink; ctx.fillText(txt, 0, 3); ctx.restore();
+}
+
 // ======================= episode driver =======================
 // EP = { dur, scenes: [[t0, t1, fn(t, lt)]...], fx(t), sfx: [[name, t, opts]...], music: [[t0, t1, gain]...], key }
 function runEpisode(EP) {
@@ -644,6 +723,7 @@ function runEpisode(EP) {
     const sc = EP.scenes.find(s => t >= s[0] && t < s[1]) || EP.scenes[EP.scenes.length - 1];
     ctx.save(); sc[2](t, t - sc[0]); ctx.restore();
     if (EP.fx) { ctx.save(); EP.fx(t); ctx.restore(); }
+    if (EP.next !== false) { ctx.save(); nextTag(t, EP.dur); ctx.restore(); }
     grade(t);
     const fi = prog(t, 0, .25), fo = prog(t, EP.dur - .35, EP.dur);
     if (fi < 1 || fo > 0) { ctx.fillStyle = `rgba(30,12,5,${Math.max(1 - fi, fo)})`; ctx.fillRect(0, 0, W, H); }

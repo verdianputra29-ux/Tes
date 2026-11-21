@@ -1,0 +1,59 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 13</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 13 — "Grup Keluarga": 1,247 unread -> mute the group -> peace -> Ibu calls: "why didn't you reply?"
+const SPAM = [['SELAMAT PAGI', false, '#FFE1E1'], ['Info penting!! sebarkan!!', false], ['[Stiker bunga]', false, '#FFF3C4'], ['Jangan lupa sarapan', false], ['SELAMAT PAGI', false, '#FFE1E1'], ['[Video 5 menit]', false], ['Amin', false], ['[Stiker bunga]', false, '#FFF3C4']];
+function callScreen(t) {
+  const g = ctx.createLinearGradient(0, -182, 0, 180); g.addColorStop(0, '#3FA7A0'); g.addColorStop(1, '#2A6F6A');
+  ctx.fillStyle = g; ctx.fillRect(-94, -182, 188, 362);
+  const p = 1 + Math.sin(t * 8) * .06; ell(0, -60, 48 * p, 48 * p); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fill(); ell(0, -60, 40, 40); ctx.fillStyle = '#B9A8A0'; ctx.fill();
+  ctx.fillStyle = C.white; ctx.font = `900 24px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('IBU', 0, 10); ctx.font = `700 15px ${FONT}`; ctx.fillText('memanggil...', 0, 36);
+  ell(-45, 120, 24, 24); ctx.fillStyle = C.red; ctx.fill(); ell(45, 120, 24, 24); ctx.fillStyle = '#6CC07A'; ctx.fill();
+}
+runEpisode({
+  dur: 16,
+  scenes: [
+    [0, 4, (t, lt) => {
+      room(t); sofa(560, 1450);
+      drawCat({ x: 560, y: 1240, s: .95, eyes: lt < 1 ? 'happy' : 'flat', mouth: 'flat', tail: t, rot: -.05 });
+      const bz = lt > .8 ? Math.sin(t * 90) * 8 : 0;
+      phone(800 + bz, 1210, .55, .2, () => chatScreen(SPAM.slice(0, 6), 'KELUARGA BESAR', t));
+      if (lt > .8) { const p = eBack(prog(lt, .8, 1.1)); ctx.save(); ctx.translate(880, 1060); ctx.scale(p, p); ell(0, 0, 60, 46); fillStroke(C.red, 7); ctx.fillStyle = C.white; ctx.font = `900 40px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('99+', 0, 2); ctx.restore(); }
+      caption('GRUP WA KELUARGA...', t, .2, 430, { size: 115 });
+      epPill(t, 13, 'GRUP KELUARGA');
+    }],
+    [4, 8, (t, lt) => {
+      room(t);
+      phone(540, 960, 2.0, -.03, () => { ctx.save(); ctx.translate(0, -((lt * 160) % 152)); const many = SPAM.concat(SPAM, SPAM); chatScreen(many, 'KELUARGA BESAR', t); ctx.restore(); ctx.fillStyle = C.teal; ctx.fillRect(-94, -182, 188, 44); ctx.fillStyle = C.white; ctx.font = `900 18px ${FONT}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('KELUARGA BESAR', -80, -160); });
+      drawCat({ x: 540, y: 1660, s: .8, eyes: 'flat', mouth: 'flat', tail: t, sweat: 1 });
+      caption('1.247 PESAN\nBELUM DIBACA', t, 4.3, 300, { size: 130, hi: [1], hiColor: '#FF8A7A' });
+    }],
+    [8, 12, (t, lt) => {
+      room(t); sofa(560, 1450);
+      drawCat({ x: 560, y: 1240, s: .95, eyes: 'happy', mouth: 'smile', tail: t * 2, rot: -.1 });
+      phone(800, 1210, .55, .2, () => { chatScreen(SPAM.slice(0, 3), 'KELUARGA BESAR', t); ctx.fillStyle = 'rgba(42,26,18,.6)'; ctx.fillRect(-94, -40, 188, 80); ctx.fillStyle = C.white; ctx.font = `900 22px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('DIBISUKAN', 0, 2); });
+      const r = rng(7); for (let i = 0; i < 4; i++) { const k = prog(lt, .4 + i * .3, 2.2 + i * .3); if (k <= 0 || k >= 1) continue; ctx.globalAlpha = Math.sin(k * Math.PI); heart(450 + r() * 200, 1000 - k * 350, .7, '#FF8FB1'); ctx.globalAlpha = 1; }
+      pill('GRUP DIBISUKAN 1 TAHUN', W / 2, 640, C.ink, C.yellow, t, 8.3);
+      caption('AKHIRNYA\nTENANG...', t, 8.6, 430, { size: 140, hi: [1] });
+    }],
+    [12, 16, (t, lt) => {
+      room(t); sofa(560, 1450);
+      ctx.save(); if (lt < 2.5) ctx.translate(Math.sin(t * 70) * 6, 0);
+      phone(540, 880, 1.6, -.04, () => callScreen(t)); ctx.restore();
+      drawCat({ x: 760, y: 1300, s: .8, eyes: 'wide', mouth: 'o', tail: t * 5, sweat: 1, shake: t });
+      bubble(330, 1330, 420, 150, '"Kok nggak\nbales grup??"', 40, 60, -1);
+      caption('...IBU NGECEK\nSIAPA YANG BACA', t, 12.6, 330, { size: 115, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 13.6, 'TAG ANGGOTA GRUP', 'KELUARGA KAMU!');
+    }],
+  ],
+  fx(t) { swipe(t, 4.0, .45); flash(t, 8.0, .3); flash(t, 12.0, .2); },
+  music: [[0, 4.0, 1], [8.0, 11.9, 1]],
+  sfx: [['pop', .2, { f: 700 }], ['buzz', .8, { n: 3 }], ['notif', .9, { g: .2 }], ['notif', 1.4, { g: .2 }], ['notif', 1.9, { g: .2 }], ['notif', 2.4, { g: .2 }], ['pop', 1.0, { f: 1000, g: .35 }],
+    ['whoosh', 3.75, { d: .5, g: .6 }], ['notif', 4.2, { g: .15 }], ['notif', 4.5, { g: .15 }], ['notif', 4.8, { g: .15 }], ['notif', 5.1, { g: .15 }], ['notif', 5.4, { g: .15 }], ['notif', 5.7, { g: .15 }], ['pop', 4.35, { f: 600 }],
+    ['click', 8.2], ['ding', 8.35, { f: 1568, g: .25 }], ['pop', 8.65, { f: 700 }],
+    ['ring', 12.0, { t1: 16 }], ['sting', 12.2, { g: .3 }], ['pop', 12.65, { f: 600 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>
