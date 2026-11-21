@@ -9,6 +9,7 @@ function cardboard(x, y, s, rot) { ctx.save(); ctx.translate(x, y); ctx.rotate(r
 function wetTint(a) { ctx.fillStyle = `rgba(90,120,160,${a})`; ctx.fillRect(0, 0, W, H); }
 runEpisode({
   dur: 16,
+  hook: 'PULANG KERJA\nTERSIAL SEDUNIA',
   scenes: [
     [0, 3.5, (t, lt) => {
       street(t, { scroll: .25 });

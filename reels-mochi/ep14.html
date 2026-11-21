@@ -17,6 +17,7 @@ function callGrid(hl) {
 function meeting(t, cat, hl) { room(t); wallClock(220, 600, 100, 90 + t * 4); desk(1340); laptop(330, 1340, .8, true, () => callGrid(hl)); drawCat({ x: 690, y: 1140, s: 1.0, ...cat }); }
 runEpisode({
   dur: 16,
+  hook: 'JAM 1 SIANG =\nJAM PALING BERAT',
   scenes: [
     [0, 3.5, (t, lt) => {
       room(t); desk(1360);

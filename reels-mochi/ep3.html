@@ -23,6 +23,7 @@ function office(t, lt, opts = {}) {
 }
 runEpisode({
   dur: 16,
+  hook: 'POV: KAMERA OFF\nPAS MEETING...',
   scenes: [
     [0, 4, (t, lt) => {
       const munch = Math.floor(lt * 4) % 2;

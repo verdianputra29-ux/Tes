@@ -15,6 +15,7 @@ function docScreen(lines, submit) {
 function mugs(n) { for (let i = 0; i < n; i++) { const x = 900 - (i % 3) * 70, y = 1290 - Math.floor(i / 3) * 70; rr(x - 28, y - 56, 56, 56, 10); fillStroke(C.white, 6); ctx.beginPath(); ctx.arc(x + 30, y - 28, 14, -1.2, 1.2); ctx.lineWidth = 6; ctx.stroke(); } }
 runEpisode({
   dur: 16,
+  hook: 'TIM SKS\nWAJIB NONTON!',
   scenes: [
     [0, 3.5, (t, lt) => {
       room(t);

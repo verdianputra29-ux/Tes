@@ -9,6 +9,7 @@ function shop(t) { room(t, { window: false, wallA: '#FFE8CC', wallB: '#F7C894' }
 function counter(x) { rr(x - 200, 1250, 400, 230, 16); fillStroke('#7C6CD9', 10); rr(x - 220, 1230, 440, 40, 12); fillStroke('#5E50B5', 9); }
 runEpisode({
   dur: 16,
+  hook: 'KENAPA ANTREAN AKU\nSELALU PALING LAMA?',
   scenes: [
     [0, 4, (t, lt) => {
       shop(t); counter(150);

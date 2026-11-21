@@ -26,6 +26,7 @@ function hideBlanket(x, y, t, peek) {
 function lamp(x, on) { ctx.strokeStyle = C.ink; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 120); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - 60, 170); ctx.lineTo(x - 30, 120); ctx.lineTo(x + 30, 120); ctx.lineTo(x + 60, 170); ctx.closePath(); fillStroke(C.yellow, 7); if (on) { const g = ctx.createRadialGradient(x, 200, 10, x, 200, 400); g.addColorStop(0, 'rgba(255,240,180,.45)'); g.addColorStop(1, 'rgba(255,240,180,0)'); ctx.fillStyle = g; ctx.fillRect(x - 400, 150, 800, 600); } }
 runEpisode({
   dur: 16,
+  hook: 'BERANI NONTON\nHOROR SENDIRIAN?',
   scenes: [
     [0, 4, (t, lt) => {
       room(t, DARK); tv(540, 720, t, false); sofa(560, 1450);

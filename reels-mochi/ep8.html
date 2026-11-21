@@ -16,6 +16,7 @@ function battScreen(pct, blink) {
 function socket(x, y) { rr(x - 50, y - 70, 100, 140, 16); fillStroke(C.white, 8); ell(x - 18, y, 8, 14); ctx.fillStyle = C.ink; ctx.fill(); ell(x + 18, y, 8, 14); ctx.fill(); }
 runEpisode({
   dur: 16,
+  hook: 'BATERAI 1% PAS\nLAGI SERU-SERUNYA',
   scenes: [
     [0, 3.5, (t, lt) => {
       room(t);

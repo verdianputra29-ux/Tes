@@ -714,6 +714,21 @@ function nextTag(t, dur) {
   ctx.fillStyle = C.ink; ctx.fillText(txt, 0, 3); ctx.restore();
 }
 
+
+function hookBand(t, text) { // big attention hook during the first ~1.6 s
+  if (!text || t > 1.7) return;
+  const pin = lerp(.88, 1, eBack(prog(t, 0, .25))), out = eIn(prog(t, 1.35, 1.7));
+  ctx.save(); ctx.translate(W / 2 + out * -W * 1.2, 820); ctx.rotate(-.035); ctx.scale(pin, pin);
+  const lines = text.split('\n'); let fs = 92; ctx.font = `900 ${fs}px ${FONT}`;
+  while (Math.max(...lines.map(l => ctx.measureText(l).width)) > 900 && fs > 50) { fs -= 4; ctx.font = `900 ${fs}px ${FONT}`; }
+  const h = lines.length * fs * 1.12 + 70;
+  rr(-500 + 12, -h / 2 + 14, 1000, h, 34); ctx.fillStyle = 'rgba(59,31,20,.45)'; ctx.fill();
+  rr(-500, -h / 2, 1000, h, 34); fillStroke(C.yellow, 12);
+  ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  lines.forEach((ln, i) => ctx.fillText(ln, 0, (i - (lines.length - 1) / 2) * fs * 1.12 + 4));
+  ctx.restore();
+}
+
 // ======================= episode driver =======================
 // EP = { dur, scenes: [[t0, t1, fn(t, lt)]...], fx(t), sfx: [[name, t, opts]...], music: [[t0, t1, gain]...], key }
 function runEpisode(EP) {
@@ -725,8 +740,11 @@ function runEpisode(EP) {
     if (EP.fx) { ctx.save(); EP.fx(t); ctx.restore(); }
     if (EP.next !== false) { ctx.save(); nextTag(t, EP.dur); ctx.restore(); }
     grade(t);
-    const fi = prog(t, 0, .25), fo = prog(t, EP.dur - .35, EP.dur);
-    if (fi < 1 || fo > 0) { ctx.fillStyle = `rgba(30,12,5,${Math.max(1 - fi, fo)})`; ctx.fillRect(0, 0, W, H); }
+    if (EP.hook) { ctx.save(); hookBand(t, EP.hook); ctx.restore(); }
+    // no fade-from-black at the start (first frame must grab attention) and no fade-out (clean loop);
+    // episodes without a hook keep the old fades
+    if (!EP.hook) { const fi = prog(t, 0, .25), fo = prog(t, EP.dur - .35, EP.dur);
+      if (fi < 1 || fo > 0) { ctx.fillStyle = `rgba(30,12,5,${Math.max(1 - fi, fo)})`; ctx.fillRect(0, 0, W, H); } }
   };
   if (!location.search.includes('render')) {
     document.fonts.ready.then(() => { const st = performance.now(); (function loop() { window.render(((performance.now() - st) / 1000) % EP.dur); requestAnimationFrame(loop); })(); });

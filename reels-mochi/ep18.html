@@ -11,6 +11,7 @@ function chefHat(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ct
 function recipe(t) { ctx.fillStyle = '#FFF6E8'; ctx.fillRect(-94, -182, 188, 362); ctx.fillStyle = C.ink; ctx.font = `900 16px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('NASI GORENG', 0, -150); ctx.fillText('GAMPANG!', 0, -128); ctx.save(); ctx.translate(0, -20); ctx.scale(.45, .45); plate(0, 60, 1, 'rice'); ctx.restore(); ctx.font = `700 14px ${FONT}`; ctx.fillText('5 menit • mudah', 0, 120); }
 runEpisode({
   dur: 16,
+  hook: 'PERTAMA KALI\nMASAK SENDIRI',
   scenes: [
     [0, 4, (t, lt) => {
       kitchen(t); pan(430, 1200, false);

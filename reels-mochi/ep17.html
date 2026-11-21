@@ -10,6 +10,7 @@ function rack() { rr(60, 1180, 300, 26, 8); fillStroke('#6E6A72', 8); for (let i
 function headband(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); rr(-176, -110, 352, 36, 18); fillStroke(C.red, 8); ctx.restore(); }
 runEpisode({
   dur: 16,
+  hook: 'HARI PERTAMA\nNGE-GYM...',
   scenes: [
     [0, 4, (t, lt) => {
       room(t, GYM); rack();

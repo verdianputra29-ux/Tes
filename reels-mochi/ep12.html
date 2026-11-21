@@ -22,6 +22,7 @@ function workDesk(t, catOpts, mode, dots, wall) {
 }
 runEpisode({
   dur: 16,
+  hook: 'PASSWORD-NYA\nAPA YA...',
   scenes: [
     [0, 4, (t, lt) => {
       workDesk(t, { eyes: 'determined', mouth: 'smile', tail: t * 2, sq: (Math.floor(t * 10) % 2) * .02 }, 'login', Math.min(8, Math.floor(lt * 4)));
