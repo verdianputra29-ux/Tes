@@ -377,6 +377,16 @@ def s_ring(t, t1=2.0, g=0.25):
             add(fx, (np.sin(2 * np.pi * 880 * x) + np.sin(2 * np.pi * 1108 * x)) * 0.5 * env(len(x), 0.01) * (np.sin(2 * np.pi * 20 * x) > 0), k + j * 0.5, g)
         k += 2.0
 
+
+def s_scratch(t, g=0.55):
+    d = 0.55
+    n = noise(d)
+    x = ts(d)
+    mod = np.abs(np.sin(2 * np.pi * 7 * x))
+    out = onepole(n, 0.35) * mod * env(len(n), 0.002, 0.3) * 2.5
+    tonal = sweep(300 + 900 * mod, d) * 0.3 * env(len(n), 0.002, 0.2)
+    add(fx, out + tonal, t, g)
+
 for ev in tl["sfx"]:
     name, t, opts = ev[0], ev[1], (ev[2] if len(ev) > 2 else {})
     globals()["s_" + name](t, **opts)

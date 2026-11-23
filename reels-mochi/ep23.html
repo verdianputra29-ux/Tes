@@ -1,0 +1,67 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 23</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 23 — "Nyari HP": frantic phone hunt using the phone's own flashlight -> it was in hand all along.
+function torch(x, y, ang, len = 700) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  const g = ctx.createLinearGradient(0, 0, len, 0); g.addColorStop(0, 'rgba(255,250,210,.55)'); g.addColorStop(1, 'rgba(255,250,210,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(len, -200); ctx.lineTo(len, 200); ctx.lineTo(0, 12); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function handPhone(x, y, s, buzz, t) { ctx.save(); if (buzz) ctx.translate(Math.sin(t * 90) * 6, 0); phone(x, y, s, .25, () => { ctx.fillStyle = '#2A1A12'; ctx.fillRect(-94, -182, 188, 362); ell(0, -150, 14, 14); ctx.fillStyle = '#FFF6C8'; ctx.fill(); }); ctx.restore(); }
+const DIM = { wallA: '#C9A27E', wallB: '#9C744F', view: 'night' };
+runEpisode({
+  dur: 16,
+  hook: 'HP KAMU PERNAH\nILANG KAYAK GINI?',
+  scenes: [
+    [0, 4, (t, lt) => {
+      room(t, DIM); sofa(560, 1450);
+      const x = 540 + Math.sin(lt * 5) * 260;
+      torch(x + 120, 1180, Math.sin(lt * 5) > 0 ? -.3 : Math.PI + .3);
+      drawCat({ x, y: 1300, s: .85, eyes: 'wide', mouth: 'scream', run: t * 20, tail: t * 9, sweat: 1, shake: t });
+      handPhone(x + 120, 1330, .3, false, t);
+      caption('HP AKU MANA??', t, .2, 420, { size: 150, fill: C.yellow, shake: 4 });
+      pill('UDAH 10 MENIT NYARI', W / 2, 620, C.ink, C.white, t, 1.3);
+      epPill(t, 23, 'NYARI HP');
+    }],
+    [4, 8, (t, lt) => {
+      room(t, DIM);
+      sofa(560, 1450);
+      ctx.save(); ctx.translate(820, 1420); ctx.rotate(-.9);
+      drawCat({ x: 0, y: 0, s: .75, eyes: 'determined', mouth: 'flat', tail: t * 3, sweat: 1 }); ctx.restore();
+      torch(640, 1440, Math.PI - .05 + Math.sin(t * 3) * .1, 600);
+      handPhone(660, 1430, .28, false, t);
+      caption('CEK KOLONG SOFA...', t, 4.3, 420, { size: 120 });
+      caption('CEK KULKAS...', t, 5.8, 600, { size: 90, fill: '#FFE9C9', rot: .04 });
+    }],
+    [8, 11.5, (t, lt) => {
+      room(t, DIM);
+      npcCat(250, 1330, .6, ...NPC[1], { eyes: 'open', mouth: 'smile' });
+      bubble(300, 960, 460, 130, '"Aku telponin ya"', 42, -60, 1);
+      const ring = lt > 1.4;
+      drawCat({ x: 740, y: 1300, s: .85, eyes: ring ? 'wide' : 'open', mouth: ring ? 'o' : 'smile', tail: t * 3, shake: ring ? t : 0 });
+      handPhone(860, 1330, .3, ring, t);
+      if (ring) caption('BZZZ... BZZZ...', t, 9.4, 1100, { size: 70, fill: C.yellow, rot: -.08, shake: 5 });
+      caption('MINTA TOLONG\nTELPONIN', t, 8.2, 420, { size: 125, hi: [1] });
+    }],
+    [11.5, 16, (t, lt) => {
+      room(t, DIM);
+      zoomAt(lerp(1.3, 1.1, eOut(prog(lt, 0, .6))), 760, 1250);
+      drawCat({ x: 700, y: 1250, s: .95, eyes: 'flat', mouth: 'flat', tail: 0, sweat: 1 });
+      handPhone(840, 1290, .4, lt < 1, t);
+      ctx.save(); ctx.strokeStyle = C.red; ctx.lineWidth = 12; ctx.beginPath(); ctx.ellipse(840, 1290, 110, 140, 0, 0, 7); ctx.stroke(); ctx.restore();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      caption('...DARI TADI\nAKU PEGANG', t, 11.8, 420, { size: 140, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 13.4, 'SIAPA YANG', 'PERNAH BEGINI?');
+    }],
+  ],
+  fx(t) { swipe(t, 4.0, .4); flash(t, 8.0, .25); flash(t, 11.5, .2); },
+  music: [[0, 8.0, 1.05], [8.0, 9.35, .7]],
+  sfx: [['steps', .1, { t1: 3.9, every: .14, g: .25 }], ['pop', .25, { f: 700 }], ['pop', 1.35, { f: 1000, g: .3 }], ['click', .2, { g: .3 }],
+    ['whoosh', 3.75, { d: .4, g: .5 }], ['crunch', 4.6], ['crunch', 5.2], ['click', 5.8], ['ding', 5.85, { f: 700, g: .2 }], ['pop', 4.35, { f: 800 }], ['pop', 5.85, { f: 900, g: .3 }],
+    ['pop', 8.25, { f: 700 }], ['buzz', 9.4, { n: 4 }], ['ring', 9.4, { t1: 11.4, g: .2 }], ['sting', 9.6, { g: .3 }],
+    ['sad', 11.9, { g: .3 }], ['pop', 11.85, { f: 600 }], ['pop', 13.45, { f: 800, g: .4 }]],
+});
+</script></body></html>

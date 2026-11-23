@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 24</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 24 — "Awal vs Akhir Bulan": tanggal 1 sultan -> tanggal 15 still ok -> tanggal 28 survival -> split screen.
+function sultan(t, cx, s) {
+  room(t, { window: false, wallA: '#FFE3B3', wallB: '#F7C06E' });
+  sunRays(cx, 900, t, '#FFF6C8', 14, 900, .25);
+  drawCat({ x: cx, y: 1200, s, eyes: 'happy', mouth: 'smile', tail: t * 4 });
+  sunglasses(cx, 1200 - 30 * s, s);
+  coffeeCup(cx + 230 * s, 1400, .9 * s, t); martabak(cx - 240 * s, 1440, .5 * s, t, 0, false);
+}
+function survival(t, cx, s) {
+  room(t, { window: false, wallA: '#C9B9AE', wallB: '#9C93A6' });
+  drawCat({ x: cx, y: 1200, s, eyes: 'flat', mouth: 'flat', tail: 0, sweat: 1 });
+  noodleCup(cx + 220 * s, 1440, .55 * s, t); wallet(cx - 230 * s, 1440, .6 * s, true);
+  moth(cx - 230 * s + Math.sin(t * 3) * 40, 1300 - (t * 80) % 200, t, .8 * s);
+}
+function dateTag(t, t0, txt, col) { pill(txt, W / 2, 640, col, C.white, t, t0); }
+runEpisode({
+  dur: 16,
+  hook: 'AWAL BULAN\nVS AKHIR BULAN',
+  scenes: [
+    [0, 4, (t, lt) => {
+      sultan(t, 540, 1.05); moneyRain(t, 1.2, 9, 9);
+      caption('TANGGAL 1:\nSULTAN', t, .2, 400, { size: 150, hi: [1] });
+      dateTag(t, .9, 'GAJI BARU MASUK', C.teal);
+      epPill(t, 24, 'AWAL VS AKHIR BULAN');
+    }],
+    [4, 7.5, (t, lt) => {
+      room(t, { window: true });
+      desk(1380);
+      drawCat({ x: 540, y: 1180, s: 1.0, eyes: 'open', mouth: 'smile', tail: t * 2 });
+      plate(540, 1360, 1.0, 'rice');
+      caption('TANGGAL 15:\nMASIH AMAN', t, 4.2, 400, { size: 150, hi: [1], hiColor: '#FFE9C9' });
+      dateTag(t, 4.8, 'MULAI HEMAT DIKIT', C.ink);
+    }],
+    [7.5, 11.5, (t, lt) => {
+      survival(t, 540, 1.05);
+      caption('TANGGAL 28:\nBERTAHAN HIDUP', t, 7.7, 400, { size: 140, hi: [1], hiColor: '#FF8A7A' });
+      dateTag(t, 8.4, 'SALDO: Rp12.500', C.red);
+    }],
+    [11.5, 16, (t, lt) => {
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W / 2, H); ctx.clip(); ctx.translate(-270, 0); sultan(t, 540, .8); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.rect(W / 2, 0, W / 2, H); ctx.clip(); ctx.translate(270, 0); survival(t, 540, .8); ctx.restore();
+      ctx.fillStyle = C.ink; ctx.fillRect(W / 2 - 6, 0, 12, H);
+      pill('TGL 1', 270, 700, C.teal, C.white, t, 11.6); pill('TGL 28', 810, 700, C.red, C.white, t, 11.8);
+      caption('SAMA-SAMA AKU,\nBEDA NASIB', t, 12.3, 400, { size: 125, hi: [1] });
+      endCard(t, 13.4, 'TAG TEMEN YANG', 'SENASIB!');
+    }],
+  ],
+  fx(t) { swipe(t, 4.0, .4); flash(t, 7.5, .3); swipe(t, 11.5, .4); },
+  music: [[0, 7.4, 1.05], [11.6, 16, .9]],
+  sfx: [['cash', .3], ['tada', .35, { g: .25 }], ['pop', .25, { f: 700 }], ['pop', .95, { f: 1000, g: .35 }], ['sparkle', 1.5],
+    ['whoosh', 3.75, { d: .4, g: .5 }], ['nom', 4.6], ['nom', 5.0], ['nom', 5.4], ['pop', 4.25, { f: 700 }], ['pop', 4.85, { f: 900, g: .3 }],
+    ['sad', 7.7, { g: .35 }], ['cricket', 8.8], ['cricket', 9.8], ['pop', 7.75, { f: 600 }], ['pop', 8.45, { f: 500, g: .35 }],
+    ['whoosh', 11.25, { d: .4, g: .5 }], ['pop', 11.65, { f: 900 }], ['pop', 11.85, { f: 600 }], ['pop', 12.35, { f: 700 }], ['pop', 13.45, { f: 800, g: .4 }]],
+});
+</script></body></html>

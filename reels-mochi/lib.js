@@ -729,6 +729,45 @@ function hookBand(t, text) { // big attention hook during the first ~1.6 s
   ctx.restore();
 }
 
+
+function pajama(x, y, s) { // striped pajama over Mochi's lower body
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.beginPath(); ctx.moveTo(-178, 40); ctx.bezierCurveTo(-176, 120, -110, 160, 0, 160); ctx.bezierCurveTo(110, 160, 176, 120, 178, 40); ctx.quadraticCurveTo(0, 70, -178, 40); ctx.closePath();
+  ctx.save(); ctx.clip(); ctx.fillStyle = '#9FD8F0'; ctx.fillRect(-200, 20, 400, 160);
+  ctx.fillStyle = '#5FA8D3'; for (let i = -9; i < 10; i++) ctx.fillRect(i * 22, 20, 10, 160); ctx.restore();
+  ctx.lineWidth = 10; ctx.strokeStyle = C.ink; ctx.stroke();
+  [[-40, 95], [40, 95]].forEach(([bx, by]) => { ell(bx, by, 9, 9); ctx.fillStyle = C.white; ctx.fill(); });
+  ctx.restore();
+}
+function sleepCap(x, y, s, t = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.rotate(-.2);
+  ctx.beginPath(); ctx.moveTo(-120, -120); ctx.quadraticCurveTo(40, -330, 190 + Math.sin(t * 6) * 10, -170); ctx.quadraticCurveTo(60, -170, 120, -110); ctx.closePath(); fillStroke('#5FA8D3', 9);
+  rr(-130, -140, 260, 44, 22); fillStroke(C.white, 8);
+  ell(195 + Math.sin(t * 6) * 10, -170, 26, 26); fillStroke(C.white, 7);
+  ctx.restore();
+}
+function ibuCat(x, y, s, mouth, t, eyes = 'happy') {
+  withCatColors('#B9A8A0', '#8E7C74', () => drawCat({ x, y, s, eyes, mouth, tail: t * 2 }));
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.save(); ctx.beginPath(); ctx.rect(-260, -260, 520, 400); ctx.clip();
+  ctx.beginPath(); ctx.ellipse(0, -5, 215, 205, 0, 0, Math.PI * 2); ctx.ellipse(0, 28, 150, 122, 0, 0, Math.PI * 2);
+  ctx.fillStyle = C.teal; ctx.fill('evenodd'); ctx.lineWidth = 10; ctx.strokeStyle = C.ink; ctx.stroke(); ctx.restore();
+  ctx.restore();
+}
+function pot(x, y, s, t, lidOff = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 10; ctx.lineCap = 'round';
+  for (let i = 0; i < 3; i++) { ctx.beginPath(); for (let k = 0; k < 16; k++) { const yy = -150 - k * 10, xx = -60 + i * 60 + Math.sin(k * .5 + t * 5 + i) * 14; k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); }
+  rr(-150, -110, 300, 170, [10, 10, 40, 40]); fillStroke('#9C9C9C', 10);
+  rr(-190, -90, 50, 24, 10); fillStroke('#6E6A72', 8); rr(140, -90, 50, 24, 10); fillStroke('#6E6A72', 8);
+  ctx.save(); ctx.translate(lidOff * 260, -120 - lidOff * 80); ctx.rotate(lidOff * 1.4);
+  ell(0, 0, 165, 28); fillStroke('#B5B5B5', 9); ell(0, -30, 26, 14); fillStroke('#6E6A72', 7); ctx.restore();
+  ctx.restore();
+}
+function sunglasses(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); rr(-125, -66, 105, 62, 20); fillStroke('#2A1A12', 7); rr(20, -66, 105, 62, 20); fillStroke('#2A1A12', 7); ctx.fillStyle = '#2A1A12'; ctx.fillRect(-22, -44, 44, 9); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(-105, -56, 30, 10); ctx.fillRect(40, -56, 30, 10); ctx.restore(); }
+function coffeeCup(x, y, s, t) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 8; ctx.lineCap = 'round'; for (let i = 0; i < 2; i++) { ctx.beginPath(); for (let k = 0; k < 10; k++) { const yy = -110 - k * 10, xx = -15 + i * 30 + Math.sin(k * .6 + t * 4 + i) * 8; k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); } ctx.beginPath(); ctx.moveTo(-70, -100); ctx.lineTo(70, -100); ctx.lineTo(55, 40); ctx.lineTo(-55, 40); ctx.closePath(); fillStroke(C.white, 8); rr(-72, -50, 144, 40, 6); ctx.fillStyle = '#A0653E'; ctx.fill(); ctx.restore(); }
+function boxPile(x, y, n) { for (let i = 0; i < n; i++) { const bx = x + ((i * 97) % 5 - 2) * 95, by = y - Math.floor(i / 5) * 105 - ((i * 37) % 3) * 6; rr(bx - 55, by - 95, 110, 95, 8); fillStroke('#C9965E', 7); ctx.strokeStyle = 'rgba(59,31,20,.5)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(bx, by - 95); ctx.lineTo(bx, by); ctx.stroke(); } }
+
 // ======================= episode driver =======================
 // EP = { dur, scenes: [[t0, t1, fn(t, lt)]...], fx(t), sfx: [[name, t, opts]...], music: [[t0, t1, gain]...], key }
 function runEpisode(EP) {

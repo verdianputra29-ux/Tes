@@ -1,0 +1,66 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 21</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 21 — "Checkout Jam 2 Pagi": flash sale at 2 AM -> checkout everything -> pile of packages -> paylater bill.
+const NIGHT = { view: 'night', wallA: '#6A5478', wallB: '#45344F' };
+function shopScreen(t, n) {
+  ctx.fillStyle = '#FFF6E8'; ctx.fillRect(-94, -182, 188, 362);
+  ctx.fillStyle = C.red; ctx.fillRect(-94, -182, 188, 56);
+  ctx.fillStyle = C.white; ctx.font = `900 22px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('FLASH SALE 90%', 0, -154);
+  const cols = ['#3FA7A0', '#FFD23F', '#7C6CD9', '#F2A93B'];
+  for (let i = 0; i < 4; i++) { const x = -86 + (i % 2) * 90, y = -116 + Math.floor(i / 2) * 120; rr(x, y, 82, 110, 8); ctx.fillStyle = '#F4EBDD'; ctx.fill(); rr(x + 12, y + 10, 58, 58, 8); ctx.fillStyle = cols[i]; ctx.fill(); ctx.fillStyle = C.red; ctx.font = `900 14px ${FONT}`; ctx.fillText('-90%', x + 41, y + 88); }
+  if (n !== undefined) { rr(-80, 130, 160, 40, 12); ctx.fillStyle = C.red; ctx.fill(); ctx.fillStyle = C.white; ctx.font = `900 18px ${FONT}`; ctx.fillText(`KERANJANG (${n})`, 0, 151); }
+}
+function phoneGlow(x, y) { const g = ctx.createRadialGradient(x, y, 20, x, y, 500); g.addColorStop(0, 'rgba(180,220,255,.35)'); g.addColorStop(1, 'rgba(180,220,255,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+runEpisode({
+  dur: 16,
+  hook: 'JANGAN BUKA\nAPLIKASI BELANJA\nJAM 2 PAGI',
+  scenes: [
+    [0, 4, (t, lt) => {
+      bedroom(t); ctx.fillStyle = 'rgba(30,20,50,.55)'; ctx.fillRect(0, 0, W, H);
+      alarmClock(155, 1130, .85, '02:00', false, t);
+      phoneGlow(760, 1050);
+      drawCat({ x: 600, y: 1150, s: 1.1, eyes: 'open', mouth: 'flat', tail: t });
+      blanket(t, 1240, 0);
+      phone(790, 1060, .55, .15, () => shopScreen(t));
+      caption('JAM 2 PAGI...', t, .2, 420, { size: 140 });
+      pill('"cuma liat-liat kok"', W / 2, 620, C.ink, '#FFE9C9', t, 1.4);
+      epPill(t, 21, 'CHECKOUT JAM 2 PAGI');
+    }],
+    [4, 8, (t, lt) => {
+      room(t, NIGHT); phoneGlow(540, 900);
+      const n = Math.min(12, 1 + Math.floor(lt * 3.2));
+      phone(540, 940, 2.0, -.03, () => shopScreen(t, n));
+      drawCat({ x: 540, y: 1660, s: .8, eyes: 'sparkle', mouth: 'smile', tail: t * 6, shake: t });
+      caption('MASUKIN KERANJANG\nSEMUA!!', t, 4.2, 230, { size: 115, hi: [1], hiColor: C.yellow });
+    }],
+    [8, 12, (t, lt) => {
+      room(t);
+      door(170, 1480, lt > .3 && lt < 1.1 ? t : 0);
+      boxPile(640, 1480, Math.min(17, Math.floor(prog(lt, .3, 2.6) * 17)));
+      drawCat({ x: 900, y: 1350, s: .7, eyes: 'happy', mouth: 'smile', tail: t * 4 });
+      pill('*SEMINGGU KEMUDIAN*', W / 2, 330, C.ink, C.yellow, t, 8.1);
+      caption('PAKET DATENG\nTERUS...', t, 8.5, 500, { size: 130, hi: [1] });
+    }],
+    [12, 16, (t, lt) => {
+      room(t);
+      boxPile(640, 1480, 17);
+      const faint = lt > 1.1;
+      ctx.save(); if (faint) { ctx.translate(900, 1420); ctx.rotate(-1.4 * eOut(prog(lt, 1.1, 1.5))); ctx.translate(-900, -1420); }
+      drawCat({ x: 900, y: 1350, s: .7, eyes: faint ? 'flat' : 'wide', mouth: 'o', tail: 0, sweat: 1 }); ctx.restore();
+      notif(W / 2, 560, 'PAYLATER', 'Tagihan bulan ini: Rp2.450.000', t, 12.2, C.red, 940, '!');
+      caption('...SIAPA YANG\nBELANJA INI??', t, 13.0, 330, { size: 125, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 13.6, 'TAG TEMEN YANG', 'HOBI CHECKOUT MALEM!');
+    }],
+  ],
+  fx(t) { flash(t, 4.0, .25); swipe(t, 8.0, .45); flash(t, 12.0, .2); },
+  music: [[0, 12.0, .9]],
+  sfx: [['pop', .2, { f: 700 }], ['tick', .3, { n: 14, g: .08 }], ['pop', 1.45, { f: 900, g: .35 }],
+    ['click', 4.3], ['notif', 4.35, { f: 1.2, g: .2 }], ['click', 4.6], ['notif', 4.65, { f: 1.25, g: .2 }], ['click', 4.9], ['notif', 4.95, { f: 1.3, g: .2 }], ['click', 5.3], ['click', 5.6], ['click', 5.9], ['cash', 6.6], ['pop', 4.25, { f: 800 }],
+    ['whoosh', 7.75, { d: .5, g: .6 }], ['doorbell', 8.3], ['slam', 8.8, { g: .3 }], ['slam', 9.3, { g: .3 }], ['slam', 9.8, { g: .3 }], ['slam', 10.3, { g: .3 }], ['pop', 8.15, { f: 1000, g: .35 }],
+    ['notif', 12.2], ['sting', 12.4, { g: .4 }], ['slam', 13.1, { g: .5 }], ['pop', 13.05, { f: 600 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>
