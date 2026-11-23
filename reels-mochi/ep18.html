@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 18</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 18 — "Masak Pertama Kali": follows a recipe -> huge flames + smoke -> expectation vs reality -> orders online.
+function kitchen(t) { room(t, { wx: 640 }); rr(0, 1250, W, 240, 0); fillStroke('#E8D3B5', 0); ctx.fillStyle = C.ink; ctx.fillRect(0, 1244, W, 12); rr(250, 1200, 360, 60, 14); fillStroke('#4A3A34', 9); }
+function pan(x, y, burnt) { rr(x - 150, y - 40, 300, 50, 20); fillStroke('#3B2B26', 9); rr(x + 140, y - 30, 220, 26, 12); fillStroke(C.woodD, 8); if (burnt) { ell(x, y - 46, 110, 26); ctx.fillStyle = '#1A0F0A'; ctx.fill(); } else { ell(x, y - 46, 110, 26); ctx.fillStyle = '#F2C24E'; ctx.fill(); } }
+function chefHat(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.beginPath(); ctx.arc(-60, -190, 60, 0, 7); ctx.arc(0, -220, 75, 0, 7); ctx.arc(60, -190, 60, 0, 7); fillStroke(C.white, 8); rr(-100, -170, 200, 60, 10); fillStroke(C.white, 8); ctx.restore(); }
+function recipe(t) { ctx.fillStyle = '#FFF6E8'; ctx.fillRect(-94, -182, 188, 362); ctx.fillStyle = C.ink; ctx.font = `900 16px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('NASI GORENG', 0, -150); ctx.fillText('GAMPANG!', 0, -128); ctx.save(); ctx.translate(0, -20); ctx.scale(.45, .45); plate(0, 60, 1, 'rice'); ctx.restore(); ctx.font = `700 14px ${FONT}`; ctx.fillText('5 menit • mudah', 0, 120); }
+runEpisode({
+  dur: 16,
+  hook: 'PERTAMA KALI\nMASAK SENDIRI',
+  scenes: [
+    [0, 4, (t, lt) => {
+      kitchen(t); pan(430, 1200, false);
+      drawCat({ x: 760, y: 1100, s: .85, eyes: 'determined', mouth: 'smile', tail: t * 3 });
+      chefHat(760, 1100, .85);
+      phone(160, 1050, .65, -.15, () => recipe(t));
+      caption('COBA MASAK\nIKUTIN RESEP', t, .2, 430, { size: 140, hi: [1] });
+      epPill(t, 18, 'MASAK PERTAMA');
+    }],
+    [4, 8, (t, lt) => {
+      kitchen(t);
+      const big = eOut(prog(lt, .2, 2));
+      smoke(t, 430, 1100, prog(lt, .8, 3) * 1.5, 3);
+      pan(430, 1200, lt > 1);
+      flames(t, 430, 1160, .6 + big * 1.4);
+      drawCat({ x: 820, y: 1100, s: .85, eyes: 'wide', mouth: 'scream', tail: t * 10, sweat: 1, shake: t, run: lt > 1.5 ? t * 20 : -1 });
+      chefHat(820, 1100, .85);
+      caption('KOK APINYA\nGEDE BANGET?!', t, 4.5, 400, { size: 135, hi: [1], hiColor: '#FF8A7A', shake: 5 });
+    }],
+    [8, 12, (t, lt) => {
+      room(t, { window: false });
+      ctx.fillStyle = C.ink; ctx.fillRect(538, 200, 6, 1300);
+      ctx.save(); ctx.translate(270, 900); ctx.scale(1.4, 1.4); plate(0, 0, 1, 'rice'); ctx.restore();
+      ctx.save(); ctx.translate(810, 900); ctx.scale(1.4, 1.4); plate(0, 0, 1, 'burnt'); ctx.restore();
+      smoke(t, 810, 820, .5, 9);
+      T2('EKSPEKTASI', 270, 620, '#6CC07A'); T2('REALITA', 810, 620, '#FF8A7A');
+      drawCat({ x: 540, y: 1380, s: .7, eyes: 'flat', mouth: 'flat', tail: t, sweat: 1 });
+      caption('EKSPEKTASI VS REALITA', t, 8.2, 330, { size: 95 });
+    }],
+    [12, 16, (t, lt) => {
+      kitchen(t); pan(430, 1200, true);
+      notif(W / 2, 640, 'PESANAN', 'Nasi goreng sedang diantar', t, 12.2, C.teal, 900, '>', .9);
+      const chew = lt > 1.4 ? Math.floor(lt * 5) % 2 : 0;
+      drawCat({ x: 760, y: 1100, s: .85, eyes: 'happy', mouth: chew ? 'o' : 'smile', tail: t * 3 });
+      if (lt > 1.2) { ctx.save(); ctx.translate(760, 1230); ctx.scale(.7, .7); plate(0, 0, 1, 'rice'); ctx.restore(); }
+      caption('AKHIRNYA\nPESEN ONLINE', t, 12.8, 420, { size: 140, hi: [1] });
+      endCard(t, 13.6, 'TAG TEMEN YANG', 'GABISA MASAK!');
+    }],
+  ],
+  fx(t) { flash(t, 4.0, .2); swipe(t, 8.0, .45); flash(t, 12.0, .3); },
+  music: [[0, 4.0, 1], [8.0, 9.0, .5], [12.6, 16, .85]],
+  sfx: [['pop', .2, { f: 700 }], ['sizzle', .8, { t1: 4.0, g: .1 }], ['pop', .9, { f: 900, g: .3 }],
+    ['sizzle', 4.0, { t1: 8.0, g: .3 }], ['whoosh', 4.1, { d: .8, g: .5 }], ['alarm', 5.2, { t1: 7.9, g: .2 }], ['pop', 4.55, { f: 600 }],
+    ['whoosh', 7.75, { d: .5, g: .6 }], ['sad', 8.6, { g: .3 }], ['pop', 8.25, { f: 700 }],
+    ['notif', 12.2], ['doorbell', 13.1, { g: .25 }], ['nom', 13.5], ['nom', 13.9], ['nom', 14.3], ['pop', 12.85, { f: 700 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+function T2(txt, x, y, col) { ctx.save(); ctx.font = `900 64px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = 14; ctx.strokeStyle = C.ink; ctx.strokeText(txt, x, y); ctx.fillStyle = col; ctx.fillText(txt, x, y); ctx.restore(); }
+</script></body></html>

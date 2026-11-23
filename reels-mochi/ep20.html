@@ -1,0 +1,56 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 20</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 20 — "Weekend Cepet Banget": Friday joy -> blink, Saturday & Sunday gone -> Sunday-night dread -> Monday alarm.
+runEpisode({
+  dur: 16,
+  hook: 'WEEKEND KOK\nCEPET BANGET??',
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      room(t);
+      calendar(220, 820, .9, 'JUM', 'HARI');
+      confetti(t, 0, 3);
+      drawCat({ x: 600, y: 1260 + Math.abs(Math.sin(t * 7)) * -90, s: 1.0, eyes: 'happy', mouth: 'scream', tail: t * 8, rot: Math.sin(t * 7) * .15 });
+      caption('JUMAT SORE:\nAKHIRNYA WEEKEND!', t, .2, 430, { size: 120, hi: [1] });
+      epPill(t, 20, 'WEEKEND');
+    }],
+    [3.5, 7, (t, lt) => {
+      room(t, { view: lt > 1.7 ? 'night' : 'sun' });
+      const days = ['SAB', 'SAB', 'MIN', 'MIN'];
+      calendar(220, 820, .9, days[Math.min(3, Math.floor(lt * 1.3))], 'HARI');
+      wallClock(860, 250, 90, lt * 700);
+      sofa(600, 1450);
+      const blink = Math.floor(lt * 3) % 3 === 0;
+      drawCat({ x: 600, y: 1240, s: .95, eyes: blink ? 'closed' : 'happy', mouth: 'smile', tail: t * 2 });
+      phone(820, 1220, .5, .2, () => { const o = (t * 300) % 120; ctx.fillStyle = '#F2A93B'; for (let i = -2; i < 4; i++) { rr(-80, -170 + i * 120 + o, 160, 100, 12); ctx.fill(); } });
+      caption('*KEDIP SEKALI*', t, 3.8, 430, { size: 130, fill: C.yellow });
+    }],
+    [7, 11, (t, lt) => {
+      room(t, { view: 'night', wallA: '#7A5E80', wallB: '#4E3A58' });
+      calendar(220, 820, .9, 'MIN', 'MALAM');
+      bedroom;
+      drawCat({ x: 600, y: 1240, s: 1.0, eyes: 'flat', mouth: 'flat', tail: 0, sweat: 1 });
+      blanket(t, 1300, 0);
+      caption('MINGGU MALAM:\nKOK UDAH ABIS??', t, 7.3, 430, { size: 120, hi: [1], hiColor: '#FF8A7A' });
+    }],
+    [11, 16, (t, lt) => {
+      bedroom(t);
+      alarmClock(155, 1130, .85, '06:00', lt < 3, t);
+      calendar(220, 640, .75, 'SEN', 'HARI');
+      drawCat({ x: 600, y: 1080 - Math.sin(prog(lt, 0, .5) * Math.PI) * 200, s: 1.15, eyes: 'wide', mouth: 'scream', tail: t * 8, sweat: 1, shake: t });
+      blanket(t, 1320, 0);
+      caption('...SENIN LAGI', t, 11.3, 400, { size: 160, fill: '#FF8A7A', shake: 5 });
+      endCard(t, 13.4, 'TAG TEMEN YANG', 'BENCI HARI SENIN!');
+    }],
+  ],
+  fx(t) { swipe(t, 3.5, .45); flash(t, 7.0, .3); flash(t, 11.0, .3); },
+  music: [[0, 7.0, 1.05], [13.3, 16, .8]],
+  sfx: [['pop', .2, { f: 700 }], ['tada', .3, { g: .25 }], ['boing', .9, { g: .3 }], ['boing', 1.8, { g: .3 }],
+    ['whoosh', 3.3, { d: .4, g: .5 }], ['tick', 3.6, { n: 13, g: .12 }], ['whoosh', 4.3, { d: .3, g: .3 }], ['whoosh', 5.0, { d: .3, g: .3 }], ['whoosh', 5.8, { d: .3, g: .3 }], ['pop', 3.85, { f: 1000 }],
+    ['sad', 7.4, { g: .3 }], ['pop', 7.35, { f: 600 }], ['zzz', 9.0],
+    ['alarm', 11.0, { t1: 14.0 }], ['sting', 11.1, { g: .35 }], ['pop', 11.35, { f: 600 }], ['pop', 13.45, { f: 800, g: .4 }]],
+});
+</script></body></html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 9</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 9 — "Pulang Kampung": happy road trip -> 12-hour jam -> warm welcome -> "Kapan nikah?" interrogation.
+function car(x, y, s, col, withMochi, t, opts = {}) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  if (opts.luggage) { rr(-150, -250, 140, 70, 12); fillStroke('#7C6CD9', 8); rr(-10, -240, 150, 60, 12); fillStroke(C.teal, 8); }
+  ctx.beginPath(); ctx.moveTo(-260, 0); ctx.lineTo(-250, -90); ctx.lineTo(-170, -100); ctx.lineTo(-110, -185); ctx.lineTo(130, -185); ctx.lineTo(200, -100); ctx.lineTo(270, -85); ctx.lineTo(280, 0); ctx.closePath(); fillStroke(col, 11);
+  ctx.save(); rr(-95, -165, 210, 70, 12); fillStroke('#CDE9F2', 8); ctx.clip();
+  if (withMochi) { ctx.translate(10, -40); ctx.scale(.42, .42); drawCat({ x: 0, y: 0, ...withMochi }); }
+  ctx.restore();
+  rr(-95, -165, 210, 70, 12); fillStroke(null, 8);
+  const r = (t || 0) * (opts.spin ?? 6);
+  [[-160], [170]].forEach(([wx]) => { ell(wx, 0, 52, 52); fillStroke('#3B2B26', 9); ell(wx, 0, 22, 22); ctx.fillStyle = '#BBB'; ctx.fill(); ctx.save(); ctx.translate(wx, 0); ctx.rotate(r); ctx.fillStyle = C.ink; ctx.fillRect(-4, -20, 8, 40); ctx.restore(); });
+  ell(255, -50, 16, 12); ctx.fillStyle = C.yellow; ctx.fill();
+  ctx.restore();
+}
+function ibu(x, y, s, mouth, t) {
+  withCatColors('#B9A8A0', '#8E7C74', () => drawCat({ x, y, s, eyes: 'happy', mouth, tail: t * 2 }));
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); // headscarf
+  ctx.save(); ctx.beginPath(); ctx.rect(-260, -260, 520, 400); ctx.clip();
+  ctx.beginPath(); ctx.ellipse(0, -5, 215, 205, 0, 0, Math.PI * 2); ctx.ellipse(0, 28, 150, 122, 0, 0, Math.PI * 2);
+  ctx.fillStyle = C.teal; ctx.fill('evenodd'); ctx.lineWidth = 10; ctx.strokeStyle = C.ink; ctx.stroke(); ctx.restore();
+  ctx.restore();
+}
+runEpisode({
+  dur: 16,
+  hook: 'PULANG KAMPUNG\nTUH GINI BANGET',
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      street(t, { scroll: .9 });
+      car(540, 1440, 1.25, C.red, { s: 1, eyes: 'happy', mouth: 'smile', tail: t }, t, { luggage: true, spin: 14 });
+      caption('PULANG\nKAMPUNG!', t, .2, 430, { size: 160, hi: [1] });
+      epPill(t, 9, 'PULANG KAMPUNG');
+    }],
+    [3.5, 8, (t, lt) => {
+      street(0, { scroll: 0 });
+      car(-60, 1440, 1.0, '#7C6CD9', null, 0);
+      car(1140, 1440, 1.0, C.teal, null, 0);
+      car(540, 1440 + Math.sin(t * 20) * 2, 1.25, C.red, { s: 1, eyes: 'flat', mouth: 'flat', tail: t, sweat: 1 }, 0, { luggage: true });
+      if (Math.floor(lt * 2.5) % 3 === 0) caption('TIN TIN!', t, 3.6 + Math.floor(lt * 2.5) * .4, 1030, { size: 80, fill: C.yellow, rot: .08, shake: 5 });
+      caption('MACET 12 JAM', t, 3.8, 430, { size: 140, fill: '#FF8A7A' });
+      pill('BARU GERAK 2 KM', W / 2, 620, C.ink, C.yellow, t, 4.8);
+    }],
+    [8, 11, (t, lt) => {
+      room(t);
+      ibu(320, 1240, .85, 'smile', t);
+      drawCat({ x: 760, y: 1250, s: .95, eyes: 'happy', mouth: 'smile', tail: t * 4, rot: -.08 });
+      const r = rng(3);
+      for (let i = 0; i < 5; i++) { const k = prog(lt, .3 + i * .25, 2 + i * .25); if (k <= 0 || k >= 1) continue; ctx.globalAlpha = Math.sin(k * Math.PI); heart(450 + r() * 200, 1000 - k * 400, .8, i % 2 ? C.red : '#FF8FB1'); ctx.globalAlpha = 1; }
+      caption('AKHIRNYA\nSAMPE RUMAH!', t, 8.3, 430, { size: 140, hi: [1] });
+    }],
+    [11, 16, (t, lt) => {
+      room(t);
+      ibu(260, 1300, .7, 'o', t);
+      drawCat({ x: 760, y: 1250, s: .95, eyes: lt < .8 ? 'happy' : 'flat', mouth: 'flat', tail: t, sweat: prog(lt, .8, 1.3), shake: lt > .8 ? t : 0 });
+      [['"Kapan nikah?"', 11.2, 280, 660], ['"Kerja di mana\nsekarang?"', 11.9, 640, 880], ['"Kok gendutan?"', 12.6, 330, 1010]].forEach(([q, t0, x, y]) => {
+        const p = eBack(prog(t, t0, t0 + .3)); if (p <= 0) return;
+        ctx.save(); ctx.translate(x, y); ctx.scale(p, p); bubble(0, 0, 500, q.includes('\n') ? 170 : 120, q, 46, -80, 1); ctx.restore();
+      });
+      caption('...PENGEN BALIK\nKE MACET AJA', t, 13.4, 360, { size: 120, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 14.3, 'TAG TEMEN YANG', 'SERING DITANYA GINI!');
+    }],
+  ],
+  fx(t) { flash(t, 3.5, .25); swipe(t, 8.0, .45); flash(t, 11.0, .2); },
+  music: [[0, 3.5, 1], [8.0, 11.0, 1], [13.4, 16, .8]],
+  sfx: [['pop', .2, { f: 700 }], ['pop', .55, { f: 900 }], ['whoosh', .3, { d: 1.0, g: .3 }],
+    ['honk', 3.6], ['honk', 4.8, { d: .2 }], ['honk', 5.05, { d: .2 }], ['honk', 6.0], ['pop', 3.85, { f: 600 }], ['pop', 4.85, { f: 1000, g: .35 }], ['sad', 6.6, { g: .25 }],
+    ['whoosh', 7.75, { d: .5, g: .6 }], ['tada', 8.2, { g: .25 }], ['pop', 8.35, { f: 800 }], ['pop', 8.6, { f: 1100, g: .25 }], ['pop', 8.85, { f: 1200, g: .25 }],
+    ['pop', 11.2, { f: 700 }], ['pop', 11.9, { f: 800 }], ['pop', 12.6, { f: 900 }], ['sting', 12.9, { g: .3 }], ['pop', 13.45, { f: 600 }], ['pop', 14.35, { f: 800, g: .4 }]],
+});
+</script></body></html>

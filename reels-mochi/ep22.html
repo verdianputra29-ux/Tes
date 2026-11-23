@@ -1,0 +1,63 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 22</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 22 — "Masak Mie Tengah Malam": ninja-mode cooking -> lid clangs -> Ibu appears -> "cook for me too".
+function kitchen(t, dark) {
+  room(t, dark ? { view: 'night', wallA: '#5E4A6A', wallB: '#3E3048', wx: 640 } : { view: 'night', wx: 640 });
+  rr(0, 1250, W, 240, 0); fillStroke(dark ? '#8C7A70' : '#E8D3B5', 0); ctx.fillStyle = C.ink; ctx.fillRect(0, 1244, W, 12);
+  rr(250, 1200, 360, 60, 14); fillStroke('#4A3A34', 9);
+  if (dark) { ctx.fillStyle = 'rgba(20,10,30,.45)'; ctx.fillRect(0, 0, W, H); }
+}
+runEpisode({
+  dur: 16,
+  hook: 'MASAK MIE\nTENGAH MALEM...',
+  scenes: [
+    [0, 4, (t, lt) => {
+      kitchen(t, true);
+      const x = lerp(1150, 700, eOut(prog(lt, 0, 2.5)));
+      drawCat({ x, y: 1130 + Math.abs(Math.sin(t * 4)) * -12, s: .85, eyes: 'determined', mouth: 'flat', run: t * 5, tail: t * 2, sq: -.04 });
+      noodleCup(160, 1180, .5, t);
+      caption('LAPER JAM 12 MALEM...', t, .2, 420, { size: 110 });
+      pill('MODE NINJA: ON', W / 2, 600, C.ink, C.yellow, t, 1.2);
+      epPill(t, 22, 'MASAK MIE MALEM');
+    }],
+    [4, 8, (t, lt) => {
+      const drop = prog(lt, 2.6, 3.0);
+      ctx.translate(lt > 2.8 ? Math.sin(t * 80) * 10 * (1 - prog(lt, 2.8, 3.6)) : 0, 0);
+      kitchen(t, true);
+      pot(430, 1200, .9, t, drop);
+      drawCat({ x: 790, y: 1110, s: .85, eyes: lt < 2.8 ? 'happy' : 'wide', mouth: lt < 2.8 ? 'smile' : 'scream', tail: t * 3, shake: lt > 2.8 ? t : 0, sweat: prog(lt, 2.9, 3.2) });
+      if (lt > 2.8) caption('*KLONTANGGG!*', t, 6.85, 620, { size: 120, fill: C.yellow, shake: 7, rot: -.06 });
+      caption('PELAN-PELAN...', t, 4.2, 400, { size: 120, out: 6.8 });
+    }],
+    [8, 12, (t, lt) => {
+      kitchen(t, false);
+      const g = ctx.createRadialGradient(150, 900, 50, 150, 900, 700); g.addColorStop(0, 'rgba(255,240,180,.4)'); g.addColorStop(1, 'rgba(255,240,180,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      pot(430, 1200, .9, t, 0);
+      ibuCat(160, 1150, .6, 'flat', t, 'flat');
+      drawCat({ x: 790, y: 1110, s: .85, eyes: 'wide', mouth: 'o', tail: 0, sweat: 1, shake: t });
+      bubble(300, 760, 480, 130, '"Masak apa itu?"', 44, -100, 1);
+      caption('KETAHUAN...', t, 8.3, 380, { size: 140, fill: '#FF8A7A' });
+    }],
+    [12, 16, (t, lt) => {
+      kitchen(t, false);
+      desk(1380);
+      ibuCat(330, 1180, .7, Math.floor(lt * 5) % 2 ? 'o' : 'smile', t);
+      drawCat({ x: 760, y: 1180, s: .75, eyes: 'happy', mouth: Math.floor(lt * 5 + 1) % 2 ? 'o' : 'smile', tail: t * 3 });
+      noodleCup(330, 1350, .5, t); noodleCup(760, 1350, .5, t);
+      bubble(330, 820, 520, 150, '"Besok masakin Ibu\njuga ya"', 40, 0, 1);
+      caption('AKHIRNYA MASAK\nDUA PORSI', t, 12.6, 380, { size: 130, hi: [1] });
+      endCard(t, 13.6, 'TAG TEMEN YANG', 'SUKA MASAK TENGAH MALEM!');
+    }],
+  ],
+  fx(t) { flash(t, 4.0, .2); flash(t, 8.0, .5); swipe(t, 12.0, .4); },
+  music: [[0, 6.8, .7], [12.3, 16, .9]],
+  sfx: [['steps', .2, { t1: 2.6, every: .4, g: .12 }], ['pop', .25, { f: 700, g: .3 }], ['pop', 1.25, { f: 1000, g: .3 }],
+    ['sizzle', 4.0, { t1: 6.8, g: .15 }], ['pop', 4.25, { f: 700, g: .3 }], ['slam', 6.8, { g: .7 }], ['ding', 6.82, { f: 980, g: .4 }], ['sting', 7.0, { g: .3 }],
+    ['click', 8.0], ['heart', 8.5], ['heart', 8.9], ['heart', 9.3], ['pop', 8.35, { f: 600 }], ['pop', 9.0, { f: 800, g: .3 }],
+    ['whoosh', 11.75, { d: .4, g: .5 }], ['slurp', 12.4], ['slurp', 13.3], ['slurp', 14.2], ['pop', 12.65, { f: 700 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>

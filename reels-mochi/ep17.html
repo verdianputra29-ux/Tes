@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 17</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 17 — "Gym Hari Pertama": super motivated -> lifts heavy -> next morning can't move -> "gym next week".
+const GYM = { window: false, wallA: '#E9D8C4', wallB: '#C9A98A' };
+function rack() { rr(60, 1180, 300, 26, 8); fillStroke('#6E6A72', 8); for (let i = 0; i < 3; i++) dumbbell(130 + i * 80, 1160, .35, 0); rr(720, 700, 300, 26, 8); fillStroke('#6E6A72', 8); }
+function headband(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); rr(-176, -110, 352, 36, 18); fillStroke(C.red, 8); ctx.restore(); }
+runEpisode({
+  dur: 16,
+  hook: 'HARI PERTAMA\nNGE-GYM...',
+  scenes: [
+    [0, 4, (t, lt) => {
+      room(t, GYM); rack();
+      const up = Math.abs(Math.sin(t * 5));
+      drawCat({ x: 560, y: 1250, s: 1.0, eyes: 'determined', mouth: 'smile', tail: t * 4, sq: up * .03 });
+      headband(560, 1250, 1.0);
+      dumbbell(800, 1260 - up * 140, .8, -.2); dumbbell(320, 1260 - up * 140, .8, .2);
+      caption('HARI PERTAMA\nNGE-GYM!', t, .2, 430, { size: 140, hi: [1] });
+      pill('SEMANGAT: 100%', W / 2, 640, C.teal, C.white, t, 1.2);
+      epPill(t, 17, 'GYM HARI PERTAMA');
+    }],
+    [4, 8, (t, lt) => {
+      room(t, GYM); rack();
+      const lift = eOut(prog(lt, .8, 2.6)); const sh = (1 - lift) * 8 + 3;
+      ctx.save(); ctx.translate(Math.sin(t * 60) * sh, 0);
+      drawCat({ x: 540, y: 1280, s: 1.0, eyes: 'determined', mouth: 'scream', tail: t * 6, sweat: 1, sq: .06 - lift * .1 });
+      headband(540, 1280, 1.0);
+      const by = lerp(1300, 920, lift);
+      rr(80, by - 14, 920, 28, 10); fillStroke('#9C9C9C', 8);
+      [-1, 1].forEach(d => { for (let k = 0; k < 3; k++) { rr(540 + d * (380 + k * 40) - 22, by - 110 + k * 10, 44, 220 - k * 20, 14); fillStroke('#3B2B26', 8); } });
+      ctx.restore();
+      caption('ANGKAT BEBAN\nSEKUAT TENAGA', t, 4.2, 430, { size: 130, hi: [1] });
+      pill('100 KG (KATANYA)', W / 2, 660, C.ink, C.yellow, t, 5.6);
+    }],
+    [8, 12, (t, lt) => {
+      bedroom(t); alarmClock(155, 1130, .85, '07:00', true, t);
+      const k = prog(lt, .3, 3.4); const jerk = Math.floor(lt * 3) % 2;
+      drawCat({ x: 600, y: lerp(1200, 1080, k * jerk), s: 1.1, eyes: 'flat', mouth: 'o', tail: 0, sweat: 1, rot: jerk ? .03 : -.03, sq: jerk ? .05 : 0 });
+      blanket(t, 1260, 0);
+      if (lt > .5) caption('KREK... KREK...', t, 8.6, 730, { size: 90, fill: '#FFE9C9', rot: .05, shake: 3 });
+      caption('BESOK PAGINYA...', t, 8.2, 420, { size: 130 });
+    }],
+    [12, 16, (t, lt) => {
+      bedroom(t);
+      drawCat({ x: 600, y: 1150, s: 1.15, eyes: 'closed', mouth: 'flat', tail: 0, sq: Math.sin(t * 2) * .02 });
+      blanket(t, 1240, 0);
+      dumbbell(300, 1600, .9, .1);
+      caption('GYM-NYA\nMINGGU DEPAN AJA', t, 12.3, 420, { size: 130, hi: [1] });
+      endCard(t, 13.6, 'TAG TEMEN YANG', 'NGE-GYM CUMA SEKALI!');
+    }],
+  ],
+  fx(t) { flash(t, 4.0, .25); swipe(t, 8.0, .45); flash(t, 12.0, .3); },
+  music: [[0, 8.0, 1.05], [12.3, 16, .75]],
+  sfx: [['pop', .2, { f: 700 }], ['boing', .6, { g: .3 }], ['pop', 1.25, { f: 1000, g: .35 }],
+    ['stretch', 4.6, { d: 1.6 }], ['slam', 6.6, { g: .4 }], ['tada', 6.7, { g: .2 }], ['pop', 4.25, { f: 700 }], ['pop', 5.65, { f: 1000, g: .3 }],
+    ['whoosh', 7.75, { d: .5, g: .6 }], ['alarm', 8.0, { t1: 9.5 }], ['crunch', 8.6], ['crunch', 9.3], ['crunch', 10.0], ['crunch', 10.7], ['pop', 8.25, { f: 600 }],
+    ['whoosh', 11.75, { d: .35, g: .4, up: false }], ['zzz', 12.5], ['zzz', 14.0], ['pop', 12.35, { f: 700 }], ['pop', 13.65, { f: 800, g: .4 }]],
+});
+</script></body></html>

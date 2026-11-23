@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 2</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 2 — "Tanggal Tua": empty wallet -> instant noodles -> payday -> bills eat it all.
+const BILLS = [['Cicilan HP', '-Rp1.200.000'], ['Bayar kos', '-Rp1.500.000'], ['Paylater', '-Rp1.800.000'], ['Listrik + WiFi', '-Rp500.000']];
+runEpisode({
+  dur: 16,
+  scenes: [
+    [0, 4, (t, lt) => {
+      room(t);
+      calendar(200, 960, .95, '25', 'TANGGAL');
+      const open = lt > .9;
+      drawCat({ x: 600, y: 1200, s: 1.05, eyes: lt < .9 ? 'open' : 'flat', mouth: 'flat', tail: t, sq: Math.sin(t * 3) * .02 });
+      wallet(800, 1420, .85, open);
+      if (lt > 1.1) { const k = lt - 1.1; moth(830 + Math.sin(k * 5) * 120 - k * 40, 1330 - k * 260, t, 1.1); }
+      caption('TANGGAL TUA...', t, .2, 430, { size: 150 });
+      epPill(t, 2, 'TANGGAL TUA');
+      if (lt > 1.6) caption('*isi dompet: angin*', t, 1.6, 640, { size: 80, fill: '#FFE9C9', rot: .04 });
+    }],
+    [4, 8, (t, lt) => {
+      room(t, { view: 'night' });
+      desk(1340);
+      const slurp = (lt * 2.2) % 1;
+      drawCat({ x: 540, y: 1150, s: 1.05, eyes: 'closed', mouth: 'o', tail: t * 2, sq: Math.sin(t * 12) * .03 });
+      // noodle strand into mouth
+      ctx.strokeStyle = '#F2C24E'; ctx.lineWidth = 12; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(540, 1210); ctx.quadraticCurveTo(560 + Math.sin(t * 20) * 20, 1260, 545, 1300 - slurp * 20); ctx.stroke();
+      noodleCup(545, 1330, .9, t);
+      pill('HARI KE-5 BERTURUT-TURUT', W / 2, 640, C.red, C.white, t, 4.9);
+      caption('MENU HARI INI:\nMI INSTAN (LAGI)', t, 4.3, 430, { size: 120, hi: [1] });
+    }],
+    [8, 16, (t, lt) => {
+      const z = lt < 3.4 ? 1 : lerp(1.08, 1, eOut(prog(lt, 3.4, 3.9)));
+      zoomAt(z);
+      room(t, { wallA: lt > 3.5 ? '#E8C8A8' : C.wallA });
+      const rich = lt < 3.5;
+      const jump = rich ? -Math.abs(Math.sin(lt * 7)) * 120 * prog(lt, .5, .7) : 0;
+      drawCat({ x: 470, y: 1390 + jump, s: .9, eyes: rich ? (lt > .5 ? 'sparkle' : 'open') : 'flat', mouth: rich ? (lt > .5 ? 'scream' : 'flat') : 'flat', tail: t * (rich ? 8 : 1), shake: t, sq: rich ? Math.sin(lt * 14) * .05 : 0 });
+      phone(800, 1400 + jump * .6, .62, .15, () => { ctx.fillStyle = C.teal; ctx.font = `900 46px ${FONT}`; ctx.textAlign = 'center'; ctx.fillText('Rp', 0, -20); ctx.fillText(rich ? '5JT' : '0', 0, 40); });
+      if (rich) moneyRain(t, 8.6, 9);
+      else moneyRain(t, 11.5, 12, 18, true);
+      notif(W / 2, 600, 'BANK MOCHI', 'Gaji masuk: +Rp5.000.000', t, 8.35, C.teal, 920, '$', rich ? 1 : .82);
+      if (!rich) BILLS.forEach(([a, b], i) => notif(W / 2, 600 + (i + 1) * 138, a, b, t, 11.6 + i * .32, C.red, 920, '-', .82));
+      if (rich) caption('GAJIAN!!!', t, 8.45, 360, { size: 190, fill: C.yellow, shake: 5 });
+      else caption('GAJINYA CUMA\nNUMPANG LEWAT', t, 13.3, 330, { size: 130, hi: [1], hiColor: '#FF8A7A' });
+      endCard(t, 14.4, 'TAG TEMEN YANG', 'SENASIB!');
+    }],
+  ],
+  fx(t) { swipe(t, 4.0, .45); flash(t, 8.0, .35); flash(t, 11.5, .2); },
+  music: [[0, 11.45, 1], [14.1, 16, .7]],
+  sfx: [['pop', .2, { f: 700 }], ['pop', .1, { f: 500, g: .3 }], ['click', .9], ['whoosh', 1.1, { d: .3, g: .3 }],
+    ['cricket', 1.5], ['cricket', 2.4], ['pop', 1.65, { f: 900, g: .4 }],
+    ['whoosh', 3.75, { d: .5, g: .6 }], ['slurp', 4.4], ['slurp', 5.3], ['slurp', 6.2], ['slurp', 7.1], ['pop', 4.35, { f: 700 }], ['pop', 4.95, { f: 1000, g: .3 }],
+    ['notif', 8.35], ['cash', 8.45], ['tada', 8.5], ['boing', 8.6, { g: .4 }],
+    ['notif', 11.6, { f: .9 }], ['notif', 11.92, { f: .8 }], ['notif', 12.24, { f: .7 }], ['notif', 12.56, { f: .6 }],
+    ['whoosh', 11.6, { d: 1.2, g: .4 }], ['sad', 13.1], ['pop', 13.35, { f: 600 }], ['pop', 14.45, { f: 800, g: .4 }]],
+});
+</script></body></html>

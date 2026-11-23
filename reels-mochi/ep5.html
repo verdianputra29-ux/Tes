@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Mochi Eps. 5</title>
+<style>html,body{margin:0;background:#1a0f0a}canvas{display:block;max-height:100vh;margin:auto}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// Eps. 5 — "Kehujanan": off work at 5 -> storm, no umbrella -> runs with cardboard -> home, sun + rainbow.
+function cardboard(x, y, s, rot) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); rr(-230, -40, 460, 70, 10); fillStroke('#C9965E', 9); ctx.strokeStyle = 'rgba(59,31,20,.4)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-60, -40); ctx.lineTo(-60, 30); ctx.stroke(); ctx.restore(); }
+function wetTint(a) { ctx.fillStyle = `rgba(90,120,160,${a})`; ctx.fillRect(0, 0, W, H); }
+runEpisode({
+  dur: 16,
+  hook: 'PULANG KERJA\nTERSIAL SEDUNIA',
+  scenes: [
+    [0, 3.5, (t, lt) => {
+      street(t, { scroll: .25 });
+      drawCat({ x: 540, y: 1170 + Math.abs(Math.sin(t * 7)) * -30, s: 1.05, eyes: 'happy', mouth: 'smile', run: t * 9, tail: t * 4, rot: .05 });
+      caption('JAM 5 SORE:\nPULANG!!', t, .2, 430, { size: 150, hi: [1] });
+      epPill(t, 5, 'KEHUJANAN');
+    }],
+    [3.5, 7, (t, lt) => {
+      const gl = eIO(prog(lt, 0, 1.2));
+      street(t, { scroll: .25 * (1 - prog(lt, 0, .5)), gloom: gl });
+      darkCloud(lerp(-300, 380, eOut(prog(lt, 0, 1))), 380, 1.4);
+      darkCloud(lerp(1400, 780, eOut(prog(lt, .1, 1.1))), 300, 1.2);
+      rain(t, prog(lt, 1.0, 1.6), 3);
+      drawCat({ x: 540, y: 1170, s: 1.05, eyes: lt < .9 ? 'happy' : 'wide', mouth: lt < .9 ? 'smile' : 'o', tail: t, sweat: prog(lt, 1.3, 1.8), shake: lt > .9 ? t : 0 });
+      wetTint(.18 * prog(lt, 1, 2));
+      caption('...LUPA BAWA\nPAYUNG', t, 4.7, 430, { size: 140, hi: [1], hiColor: '#BFE3F5' });
+    }],
+    [7, 11.5, (t, lt) => {
+      street(t, { scroll: 1.2, gloom: 1 });
+      rain(t, 1.2, 5);
+      speedLines(t, 14, 7, 'rgba(220,235,255,.6)');
+      splashes(t, 1380);
+      const bob = Math.abs(Math.sin(t * 13)) * -50;
+      drawCat({ x: 520, y: 1170 + bob, s: 1.0, rot: .14, eyes: 'determined', mouth: 'flat', run: t * 26, tail: t * 10, sweat: 1 });
+      cardboard(500, 960 + bob, 1, .1 + Math.sin(t * 13) * .05);
+      wetTint(.15);
+      caption('MODE: NEKAT', t, 7.3, 430, { size: 160, fill: C.yellow, shake: 4 });
+      caption('kardus = payung darurat', t, 8.8, 640, { size: 80, fill: '#E6F3FA', rot: .04 });
+    }],
+    [11.5, 16, (t, lt) => {
+      room(t, { view: 'rainbow', wx: 600, wy: 330 });
+      sunRays(790, 540, t, '#FFF6C8', 14, 900, .18);
+      const drip = (lt * 2) % 1;
+      drawCat({ x: 470, y: 1250, s: 1.1, eyes: 'flat', mouth: 'flat', tail: t * .5, sweat: 1, sq: -.04 });
+      ctx.fillStyle = '#9FD8F0';
+      [[340, 1430], [470, 1440], [600, 1430]].forEach(([x, y], i) => { const k = (drip + i * .33) % 1; ell(x, y + k * 50, 10, 14); ctx.globalAlpha = 1 - k; ctx.fill(); ctx.globalAlpha = 1; });
+      ell(470, 1480, 220, 26); ctx.fillStyle = 'rgba(159,216,240,.6)'; ctx.fill(); // puddle
+      caption('BARU SAMPE RUMAH...\nLANGSUNG CERAH', t, 11.9, 260, { size: 110, hi: [1] });
+      endCard(t, 13.8, 'HUJAN EMANG', 'SUKA BERCANDA');
+    }],
+  ],
+  fx(t) { lightning(t, 4.4); swipe(t, 7.0, .45); iris(t, 11.5, 470, 1250, .3); },
+  music: [[0, 4.3, 1], [7.0, 11.5, .7], [12.3, 16, .8]],
+  sfx: [['pop', .2, { f: 700 }], ['pop', .1, { f: 500, g: .3 }], ['steps', .3, { t1: 3.4, every: .28, g: .2 }],
+    ['thunder', 4.4], ['rain', 4.5, { t1: 11.4, g: .25 }], ['pop', 4.75, { f: 600 }],
+    ['whoosh', 6.75, { d: .5, g: .6 }], ['steps', 7.2, { t1: 11.3, every: .12, g: .3 }], ['splash', 7.6], ['splash', 8.5], ['splash', 9.4], ['splash', 10.3], ['pop', 7.35, { f: 800 }], ['pop', 8.85, { f: 650, g: .35 }],
+    ['whoosh', 11.2, { d: .35, g: .45, up: false }], ['birds', 11.9], ['sad', 12.1, { g: .3 }], ['pop', 11.95, { f: 700 }], ['drip', 12.5], ['drip', 13.0], ['drip', 13.5], ['pop', 13.85, { f: 800, g: .4 }]],
+});
+</script></body></html>
